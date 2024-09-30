@@ -25,6 +25,7 @@ module.exports = {
           hover: "#00e187"
         },
         'light-purple': '#9894d7',
+        'dark-gray': '#343a40',
         },
         borderRadius: {
           lg: 'var(--radius)',
