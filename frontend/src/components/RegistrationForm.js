@@ -2,24 +2,32 @@ import React from "react";
 
 const RegistrationForm = () => {
   return (
-    <form className="flex flex-col items-center gap-4 mt-4">
-      <input
-        type="text"
-        placeholder="Email"
-        className="border p-2 rounded-lg w-64"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        className="border p-2 rounded-lg w-64"
-      />
-      <button
-        type="submit"
-        className="bg-blue-500 text-white p-2 rounded-lg w-64"
-      >
-        Submit
-      </button>
-    </form>
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">Register</h2>
+      <form>
+        <input
+          type="text"
+          placeholder="Username"
+          className="w-full mb-4 p-2 border"
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full mb-4 p-2 border"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full mb-4 p-2 border"
+        />
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded"
+        >
+          Sign Up
+        </button>
+      </form>
+    </div>
   );
 };
 

@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import googleSignupButton from "../images/web_dark_rd_SU.svg";
-
+import RegisterModal from "../components/RegisterModal";
 const inQLogo = require("../images/inQ-Logo.png");
 
 const Home = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
+
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-8">
       {/* Main Section */}
@@ -18,13 +23,12 @@ const Home = () => {
 
         {/* Sign-up Buttons Section */}
         <div className="flex flex-col gap-4 items-center">
-          <img
-            src={googleSignupButton}
-            alt="google sign up"
-            className="w-40"
-          />
+          <img src={googleSignupButton} alt="google sign up" className="w-40" />
           <div className="w-48 h-px bg-gray-500"></div>
-          <button className="rounded-full p-2 text-sm bg-dark-gray">
+          <button
+            className="rounded-full p-2 text-sm bg-dark-gray"
+            onClick={openModal}
+          >
             Sign up with E-mail
           </button>
         </div>
@@ -36,9 +40,11 @@ const Home = () => {
           Already have an account?
         </p>
         <button className="p-2 rounded-full pt-1.5 pb-1.5 text-sm bg-dark-gray">
-            Sign in
+          Sign in
         </button>
       </div>
+      {/* Register Modal */}
+      <RegisterModal show={showModal} onClose={closeModal}></RegisterModal>
     </div>
   );
 };
