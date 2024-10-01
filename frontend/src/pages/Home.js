@@ -1,8 +1,16 @@
 import React from 'react'
+import LeftSidebar from '../components/LeftSidebar'
+import Middlebar from '../components/Middlebar'
+import RightSidebar from '../components/RightSidebar'
+
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <div className="flex flex-row justify-between">
+        <LeftSidebar/>
+        <Middlebar/>
+        <RightSidebar/>
+    </div>
   )
 }
 

@@ -87,7 +87,7 @@ const LoginForm = () => {
   };
 
   const validatePassword = (password) => {
-    return password.length >= 6; // Keeping validation consistent
+    return password.length >= 6; 
   };
 
   const handleSubmit = async (e) => {

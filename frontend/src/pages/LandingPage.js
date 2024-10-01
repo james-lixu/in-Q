@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import googleSignupButton from "../images/web_dark_rd_SU.svg";
 import RegisterModal from "../components/RegisterModal";
 import LoginModal from "../components/LoginModal";
 const inQLogo = require("../images/inQ-Logo.png");
 
 const LandingPage = () => {
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(null);
 
