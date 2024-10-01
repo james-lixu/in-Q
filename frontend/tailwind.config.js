@@ -26,6 +26,9 @@ module.exports = {
         },
         'light-purple': '#9894d7',
         'dark-gray': '#343a40',
+        'blue-gray': '#5885AF',
+        'neon-green': '#00ff99',
+        'neon-red': '#ff0066',
         },
         borderRadius: {
           lg: 'var(--radius)',

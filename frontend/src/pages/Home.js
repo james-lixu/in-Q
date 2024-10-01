@@ -26,7 +26,7 @@ const Home = () => {
           <img src={googleSignupButton} alt="google sign up" className="w-40" />
           <div className="w-48 h-px bg-gray-500"></div>
           <button
-            className="rounded-full p-2 text-sm bg-dark-gray"
+            className="rounded-full p-2 text-sm bg-dark-gray hover:bg-slate-600"
             onClick={openModal}
           >
             Sign up with E-mail
@@ -39,7 +39,7 @@ const Home = () => {
         <p className="text-center text-gray-500 text-sm mt-2">
           Already have an account?
         </p>
-        <button className="p-2 rounded-full pt-1.5 pb-1.5 text-sm bg-dark-gray">
+        <button className="p-2 rounded-full pt-1.5 pb-1.5 text-sm bg-blue-gray hover:bg-blue-300">
           Sign in
         </button>
       </div>
