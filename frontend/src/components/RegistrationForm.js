@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const inQLogo = require("../images/inQ-Logo.png");
@@ -45,9 +45,11 @@ const FloatingLabelInput = ({ label, type, name, value, onChange, error }) => {
 };
 
 const RegistrationForm = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
+  // Update form data to include "name"
   const [formData, setFormData] = useState({
+    name: "",
     username: "",
     email: "",
     password: "",
@@ -55,13 +57,15 @@ const RegistrationForm = () => {
   });
 
   const [formErrors, setFormErrors] = useState({
+    name: false,
     username: false,
     email: false,
     password: false,
     confirmPassword: false,
   });
 
-  const [errorMessage, setErrorMessage] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -71,7 +75,13 @@ const RegistrationForm = () => {
 
     setErrorMessage("");
 
-    if (name === "email") {
+    // Handle validation for the name field
+    if (name === "name") {
+      setFormErrors((prevState) => ({
+        ...prevState,
+        name: !validateName(value),
+      }));
+    } else if (name === "email") {
       setFormErrors((prevState) => ({
         ...prevState,
         email: !validateEmail(value),
@@ -92,6 +102,11 @@ const RegistrationForm = () => {
         confirmPassword: value !== formData.password,
       }));
     }
+  };
+
+  // New validation function for the name field
+  const validateName = (name) => {
+    return name.length >= 2;
   };
 
   const validateEmail = (email) => {
@@ -115,10 +130,12 @@ const RegistrationForm = () => {
       validateEmail(formData.email) &&
       validateUsername(formData.username) &&
       validatePassword(formData.password) &&
+      validateName(formData.name) &&
       formData.password === formData.confirmPassword;
 
     if (!isFormValid) {
       const messages = [];
+      if (formErrors.name) messages.push("Name must be at least 2 characters.");
       if (formErrors.username) messages.push("Username must be at least 4 characters.");
       if (formErrors.email) messages.push("Email is not valid.");
       if (formErrors.password) messages.push("Password must be at least 6 characters.");
@@ -126,13 +143,14 @@ const RegistrationForm = () => {
       setErrorMessage(messages.join(" "));
       return;
     }
-  try {
-    const response = await axios.post('http://localhost:4000/api/users/register', formData);
-    console.log(response.data.message); 
-    navigate("/home")
-  } catch (error) {
-    setErrorMessage(error.response.data.error);
-  }
+
+    try {
+      const response = await axios.post("http://localhost:4000/api/users/register", formData);
+      console.log(response.data.message);
+      navigate("/home");
+    } catch (error) {
+      setErrorMessage(error.response.data.error);
+    }
 
     console.log("Form submitted:", formData);
   };
@@ -149,6 +167,15 @@ const RegistrationForm = () => {
             <div className="text-neon-red mb-4 text-center">{errorMessage}</div>
           )}
 
+          {/* Add FloatingLabelInput for Name */}
+          <FloatingLabelInput
+            label="Name"
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            error={formErrors.name}
+          />
           <FloatingLabelInput
             label="Username"
             type="text"

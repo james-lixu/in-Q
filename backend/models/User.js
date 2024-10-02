@@ -4,6 +4,11 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(
   {
+      name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     username: {
       type: String,
       required: true,
@@ -26,19 +31,19 @@ const UserSchema = new Schema(
     friends: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User", // Reference to the User model
+        ref: "User", 
         default: [],
       },
     ],
     gamingPreferences: {
       status: {
-        type: String, //  "Available", "Busy", etc.
+        type: String, 
         default: "Available",
       },
       gameList: [
         {
           type: [String],
-          default: [], // Array of game titles
+          default: [], 
         },
       ],
     },
@@ -46,6 +51,5 @@ const UserSchema = new Schema(
   { timestamps: true }
 ); 
 
-// Create and export the User model
 const User = mongoose.model("User", UserSchema);
 module.exports = User;

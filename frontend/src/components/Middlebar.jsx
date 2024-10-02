@@ -2,7 +2,7 @@ import React from 'react'
 
 const Middlebar = () => {
   return (
-    <div className="flex flex-col flex-grow border">Middlebar</div>
+    <div className="flex flex-col flex-grow">Middlebar</div>
   )
 }
 
