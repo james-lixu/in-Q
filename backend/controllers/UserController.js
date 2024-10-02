@@ -39,7 +39,20 @@ const userLogin = async (req, res) => {
   }
 };
 
+//Get user information
+const getUserData = async (req, res) => {
+  try {
+    const userId = req.user.id; 
+    const user = await User.findById(userId).select('name username'); //Selecting name and username only
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching user data' });
+  }
+};
+
+
 module.exports = {
     userRegistration,
     userLogin,
+    getUserData,
 }
