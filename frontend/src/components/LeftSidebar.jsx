@@ -51,7 +51,7 @@ const LeftSidebar = () => {
           onClick={() => navigate("/search")}
         >
           <img src={SearchIcon} alt="Search icon" className="w-7 h-3/4 fill-white" />
-          <span className="hidden lg:block">Search</span>
+          <span className="hidden lg:block ">Search</span>
         </button>
 
         {/* Explore Button */}

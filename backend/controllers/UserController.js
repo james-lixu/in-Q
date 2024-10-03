@@ -2,6 +2,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require("../models/User");
 
+const createToken = (_id) => {
+  return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d'})
+}
+
 //Register
 const userRegistration = async (req, res) => {
   const { name, username, email, password } = req.body; 
@@ -14,8 +18,9 @@ const userRegistration = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, username, email, password: hashedPassword });
+    const token = createToken(newUser._id)
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully" });
+    res.status(200).json({email, token});
   } catch (err) {
     res.status(500).json({ error: "Error registering user" });
   }
@@ -27,28 +32,33 @@ const userLogin = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) return res.status(400).json({ error: "User not found" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).json({ error: "Incorrect password" });
 
-    // If the user exists and the password is correct
-    res.status(200).json({ message: "Login successful", user: user.username });
+    const token = createToken(user._id);
+    
+    // Return name, username, and token upon successful login
+    res.status(200).json({ name: user.name, username: user.username, token });
   } catch (err) {
-    res.status(500).json({ error: "Error logging in" });
+    res.status(500).json({ error: "Login failed" });
   }
 };
 
-//Get user information
-const getUserData = async (req, res) => {
+// Get user info 
+const getUserInfo = async (req, res) => {
+  const { _id } = req.user; 
   try {
-    const userId = req.user.id; 
-    const user = await User.findById(userId).select('name username'); //Selecting name and username only
-    res.json(user);
-  } catch (error) {
+    const user = await User.findById(_id).select('name username');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    res.status(200).json({ name: user.name, username: user.username });
+  } catch (err) {
     res.status(500).json({ error: 'Error fetching user data' });
   }
 };
+
 
 
 module.exports = {
