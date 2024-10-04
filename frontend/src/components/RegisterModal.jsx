@@ -1,5 +1,5 @@
 import React from "react";
-import RegistrationForm from "./RegistrationForm";
+import RegistrationForm from "../forms/RegistrationForm";
 
 const RegisterModal = ({ show, onClose, children }) => {
   if (!show) return null;

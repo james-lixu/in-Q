@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
-import RegistrationForm from "./components/RegistrationForm";
+import RegistrationForm from "./forms/RegistrationForm";
+import LoginForm from "./forms/LoginForm";
 import Messsages from "./pages/Messsages";
 import Explore from "./pages/Explore";
 import Search from "./pages/Search";
@@ -19,6 +20,7 @@ const App = () => {
               <Route path="/" element={<LandingPage />} />
               <Route path="/home" element={<Home />} />
               <Route path="/register" element={<RegistrationForm />} />
+              <Route path="/login" element={<LoginForm />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/search" element={<Search />} />
               <Route path="/explore" element={<Explore />} />

@@ -10,13 +10,11 @@ export const UserProvider = ({ children }) => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem('token');
-        console.log('Token on page load:', token); 
         
         if (token) {
           const response = await axios.get('/api/users/getUserInfo', {
             headers: { Authorization: `Bearer ${token}` },
           });
-  
           // Set user data in context
           setUser(response.data);
         }

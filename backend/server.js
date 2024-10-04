@@ -1,9 +1,10 @@
 require("dotenv").config();
 
+const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/users.js");
-const cors = require("cors");
+const postRoutes = require('./routes/posts')
 
 //Express app
 const app = express();
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 
 //Routes
 app.use("/api/users", userRoutes);
+app.use('/api/posts', postRoutes);
 
 //Connect to MongoDB using mongoose
 mongoose
