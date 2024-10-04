@@ -1,4 +1,3 @@
-// UserContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,18 +9,27 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('/api/user');
-        setUser(response.data);
+        const token = localStorage.getItem('token');
+        console.log('Token on page load:', token); 
+        
+        if (token) {
+          const response = await axios.get('/api/users/getUserInfo', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+  
+          // Set user data in context
+          setUser(response.data);
+        }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
-
+  
     fetchUserData();
-  }, []);
+  }, []);  
 
   return (
-    <UserContext.Provider value={{ user }}>
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
   );

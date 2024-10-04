@@ -7,24 +7,27 @@ import Explore from "./pages/Explore";
 import Search from "./pages/Search";
 import Games from "./pages/Games";
 import Profile from "./pages/Profile";
+import { UserProvider } from "./context/UserContext";
 
 const App = () => {
   return (
     <div className="App">
-      <BrowserRouter>
-        <div className="pages">
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/register" element={<RegistrationForm />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/messages" element={<Messsages />} />
-            <Route path="/games" element={<Games />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
+      <UserProvider>
+        <BrowserRouter>
+          <div className="pages">
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/register" element={<RegistrationForm />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/messages" element={<Messsages />} />
+              <Route path="/games" element={<Games />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </UserProvider>
     </div>
   );
 };

@@ -47,7 +47,7 @@ const userLogin = async (req, res) => {
 };
 
 // Get user info 
-const getUserInfo = async (req, res) => {
+const userInfo = async (req, res) => {
   const { _id } = req.user; 
   try {
     const user = await User.findById(_id).select('name username');
@@ -59,10 +59,8 @@ const getUserInfo = async (req, res) => {
   }
 };
 
-
-
 module.exports = {
     userRegistration,
     userLogin,
-    getUserData,
+    userInfo,
 }

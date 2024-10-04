@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { useUser } from '../context/UserContext';
 
 const inQLogo = require("../images/inQ-Logo.png");
 
@@ -46,10 +47,14 @@ const FloatingLabelInput = ({ label, type, name, value, onChange, error }) => {
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { setUser } = useUser(); 
+
+  // Define loading state
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    email: "", // Removed username
-    password: "", // Removed confirmPassword
+    email: "", 
+    password: "", 
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -92,6 +97,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); 
 
     const isFormValid =
       !Object.values(formErrors).includes(true) &&
@@ -103,16 +109,21 @@ const LoginForm = () => {
       if (formErrors.email) messages.push("Email is not valid.");
       if (formErrors.password) messages.push("Password must be at least 6 characters.");
       setErrorMessage(messages.join(" "));
+      setLoading(false); 
       return;
     }
 
     try {
       const response = await axios.post('http://localhost:4000/api/users/login', formData);
-      console.log(response.data.message); 
-      navigate("/home");
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token); 
+        setUser({ name: response.data.name, username: response.data.username }); 
+        navigate("/home");
+      }
     } catch (error) {
       setErrorMessage(error.response?.data?.error || "An error occurred. Please try again.");
     }
+    setLoading(false); 
   };
 
   return (
@@ -147,8 +158,9 @@ const LoginForm = () => {
           <button
             type="submit"
             className="w-1/4 bg-blue-gray text-white py-2 rounded transform transition-transform duration-300 hover:scale-105 hover:shadow-lg active:animate-bounce hover:bg-blue-300"
+            disabled={loading} 
           >
-            Sign in
+            {loading ? '...' : 'Sign in'}
           </button>
         </div>
       </form>
