@@ -67,12 +67,74 @@ const userLogout = (req, res) => {
   res.status(200).json({ message: "Logout successful" });
 };
 
-module.exports = {
-  userLogout,
+
+// Get user by username
+const getUsername = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await User.findOne({ username }); 
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Follow a user
+const followUser = async (req, res) => {
+  const { username } = req.body;
+  const currentUser = req.user; 
+  const userToFollow = await User.findOne({ username });
+  if (!userToFollow) return res.status(404).json({ error: 'User not found' });
+
+  userToFollow.followers.addToSet(currentUser._id);
+  await userToFollow.save();
+
+  currentUser.following.addToSet(userToFollow._id);
+  await currentUser.save();
+
+  res.status(200).json({ message: 'User followed successfully' });
+  };
+
+// Unfollow a user
+const unfollowUser = async (req, res) => {
+  const { username } = req.body;
+  const currentUser = req.user;
+
+  const userToUnfollow = await User.findOne({ username });
+  if (!userToUnfollow) return res.status(404).json({ error: 'User not found' });
+
+  userToUnfollow.followers.pull(currentUser._id);
+  await userToUnfollow.save();
+
+  currentUser.following.pull(userToUnfollow._id);
+  await currentUser.save();
+
+  res.status(200).json({ message: 'User unfollowed successfully' });
+};
+
+// Check if following
+const checkFollowing = async (req, res) => {
+  const { username } = req.params;
+  const currentUser = req.user; 
+
+  const profileUser = await User.findOne({ username });
+  if (!profileUser) return res.status(404).json({ error: 'User not found' });
+
+  const isFollowing = profileUser.followers.includes(currentUser._id);
+  res.status(200).json({ isFollowing });
 };
 
 module.exports = {
     userRegistration,
     userLogin,
+    userLogout,
     userInfo,
+    followUser,
+    unfollowUser,
+    getUsername,
+    checkFollowing,
 }

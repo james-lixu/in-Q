@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(
   {
-      name: {
+    name: {
       type: String,
       required: true,
       trim: true,
@@ -25,30 +25,27 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: true,
-      minlength: 6, 
+      minlength: 6,
       trim: true,
     },
-    friends: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User", 
-        default: [],
-      },
-    ],
+
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+
     gamingPreferences: {
       status: {
-        type: String, 
+        type: String,
         default: "Available",
       },
       gameList: [
         {
           type: [String],
-          default: [], 
+          default: [],
         },
       ],
     },
   },
   { timestamps: true }
-); 
+);
 
 module.exports = mongoose.model("User", UserSchema);

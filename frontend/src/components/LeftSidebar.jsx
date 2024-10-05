@@ -8,9 +8,8 @@ import ExploreIcon from "../images/Explore-Icon.svg";
 import MessagesIcon from "../images/Messages-Icon.svg";
 import GamesIcon from "../images/Games-Icon.svg";
 import LogoutIcon from "../images/Logout-Icon.svg";
-import axios from 'axios'
+import axios from 'axios';
 
-const inQLogo = require("../images/inQ-Logo.png");
 const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
 
 const LeftSidebar = () => {
@@ -23,16 +22,16 @@ const LeftSidebar = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
       localStorage.removeItem('token');
-      navigate("/")
+      navigate("/");
     }).catch((err) => {
       console.error('Error during logout', err);
-    });    
+    });
   };
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="flex flex-col justify-between h-screen p-8">
+    <div className="flex flex-col justify-between h-screen pt-8 pb-8 pl-16 pr-16">
       <div className="flex flex-col">
         {/* Display Name and Username */}
         <div className="flex flex-col mb-4 items-center">
@@ -41,7 +40,7 @@ const LeftSidebar = () => {
               src={defaultProfileIcon}
               alt="Default profile icon"
               className="w-12 lg:w-20 rounded-full cursor-pointer"
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate(`/${user.username}`)}
             />
             {user ? (
               <>
@@ -50,7 +49,7 @@ const LeftSidebar = () => {
                 </h2>
                 <span
                   className="text-slate-400 hover:cursor-pointer"
-                  onClick={() => navigate("/profile")}
+                  onClick={() => navigate(`/${user.username}`)}
                 >
                   @{user.username}
                 </span>
@@ -103,7 +102,7 @@ const LeftSidebar = () => {
           }`}
           onClick={() => navigate("/friends")}
         >
-          <img src={FriendsIcon} alt="Explore icon" className="w-7" />
+          <img src={FriendsIcon} alt="Friends icon" className="w-7" />
           <span className="hidden lg:block">Friends</span>
         </button>
 
@@ -144,13 +143,13 @@ const LeftSidebar = () => {
         </button>
       </div>
 
-      {/* Logo */}
-      <div className="flex flex-row space-x-12"> 
+      {/* Logout */}
+      <div className="flex flex-row space-x-12">
         <button
-          onClick={() => navigate("/")}
+          onClick={handleLogout}
           className="self-end ml-2 mt-6"
         >
-          <img src={LogoutIcon} alt="Logout icon" className="w-6 lg:w-8" onClick={handleLogout}/>
+          <img src={LogoutIcon} alt="Logout icon" className="w-6 lg:w-8" />
         </button>
       </div>
     </div>
