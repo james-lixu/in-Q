@@ -8,6 +8,7 @@ import Explore from "./pages/Explore";
 import Search from "./pages/Search";
 import Games from "./pages/Games";
 import Profile from "./pages/Profile";
+import Friends from "./pages/Friends";
 import { UserProvider } from "./context/UserContext";
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
               <Route path="/register" element={<RegistrationForm />} />
               <Route path="/login" element={<LoginForm />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/friends" element={<Friends />} />
               <Route path="/search" element={<Search />} />
               <Route path="/explore" element={<Explore />} />
               <Route path="/messages" element={<Messsages />} />

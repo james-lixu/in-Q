@@ -3,10 +3,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import HomeIcon from "../images/Home-Icon.svg";
 import SearchIcon from "../images/Search-Icon.svg";
+import FriendsIcon from "../images/Friends-Icon.svg";
 import ExploreIcon from "../images/Explore-Icon.svg";
 import MessagesIcon from "../images/Messages-Icon.svg";
 import GamesIcon from "../images/Games-Icon.svg";
 import LogoutIcon from "../images/Logout-Icon.svg";
+import axios from 'axios'
 
 const inQLogo = require("../images/inQ-Logo.png");
 const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
@@ -16,13 +18,24 @@ const LeftSidebar = () => {
   const location = useLocation();
   const { user } = useUser();
 
+  const handleLogout = () => {
+    axios.post('http://localhost:4000/api/users/logout', {}, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    }).then(() => {
+      localStorage.removeItem('token');
+      navigate("/")
+    }).catch((err) => {
+      console.error('Error during logout', err);
+    });    
+  };
+
   const isActive = (path) => location.pathname === path;
 
   return (
     <div className="flex flex-col justify-between h-screen p-8">
       <div className="flex flex-col">
         {/* Display Name and Username */}
-        <div className="flex flex-col mb-4 items-start ml-6">
+        <div className="flex flex-col mb-4 items-center">
           <div className="flex flex-col items-center">
             <img
               src={defaultProfileIcon}
@@ -84,6 +97,18 @@ const LeftSidebar = () => {
 
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
+            isActive("/friends")
+              ? "text-slate-100 font-bold underline underline-offset-8"
+              : "text-slate-400"
+          }`}
+          onClick={() => navigate("/friends")}
+        >
+          <img src={FriendsIcon} alt="Explore icon" className="w-7" />
+          <span className="hidden lg:block">Friends</span>
+        </button>
+
+        <button
+          className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/explore")
               ? "text-slate-100 font-bold underline underline-offset-8"
               : "text-slate-400"
@@ -122,16 +147,10 @@ const LeftSidebar = () => {
       {/* Logo */}
       <div className="flex flex-row space-x-12"> 
         <button
-          onClick={() => navigate("/home")}
-          className="self-start ml-2 mt-6"
-        >
-          <img src={inQLogo} alt="in-Q Logo" className="w-12 lg:w-16" />
-        </button>
-        <button
           onClick={() => navigate("/")}
           className="self-end ml-2 mt-6"
         >
-          <img src={LogoutIcon} alt="Logout icon" className="w-6 lg:w-8" />
+          <img src={LogoutIcon} alt="Logout icon" className="w-6 lg:w-8" onClick={handleLogout}/>
         </button>
       </div>
     </div>

@@ -1,10 +1,14 @@
 import React from 'react'
 import LeftSidebar from '../components/LeftSidebar'
+import Middlebar from '../components/Middlebar'
+import RightSidebar from '../components/RightSidebar'
 
 const Profile = () => {
   return (
-    <div>
+    <div className="flex flex-row justify-between">
         <LeftSidebar/>
+        <Middlebar/>
+        <RightSidebar/>
     </div>
   )
 }

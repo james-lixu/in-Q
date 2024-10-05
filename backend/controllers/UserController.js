@@ -63,6 +63,14 @@ const userInfo = async (req, res) => {
   }
 };
 
+const userLogout = (req, res) => {
+  res.status(200).json({ message: "Logout successful" });
+};
+
+module.exports = {
+  userLogout,
+};
+
 module.exports = {
     userRegistration,
     userLogin,

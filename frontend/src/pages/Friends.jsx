@@ -3,7 +3,7 @@ import LeftSidebar from '../components/LeftSidebar'
 import Middlebar from '../components/Middlebar'
 import RightSidebar from '../components/RightSidebar'
 
-const Games = () => {
+const Friends = () => {
   return (
     <div className="flex flex-row justify-between">
         <LeftSidebar/>
@@ -13,4 +13,4 @@ const Games = () => {
   )
 }
 
-export default Games
+export default Friends
