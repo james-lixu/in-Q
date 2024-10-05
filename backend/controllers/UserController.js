@@ -2,9 +2,13 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require("../models/User");
 
-const createToken = (_id) => {
-  return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d'})
-}
+const createToken = (user) => {
+  return jwt.sign(
+    { _id: user._id, username: user.username }, 
+    process.env.SECRET,
+    { expiresIn: '3d' }
+  );
+};
 
 //Register
 const userRegistration = async (req, res) => {
@@ -18,9 +22,10 @@ const userRegistration = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, username, email, password: hashedPassword });
-    const token = createToken(newUser._id)
     await newUser.save();
-    res.status(200).json({email, token});
+    
+    const token = createToken(newUser);  
+    res.status(200).json({ email: newUser.email, token });
   } catch (err) {
     res.status(500).json({ error: "Error registering user" });
   }
@@ -37,9 +42,8 @@ const userLogin = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).json({ error: "Incorrect password" });
 
-    const token = createToken(user._id);
+    const token = createToken(user); 
     
-    // Return name, username, and token upon successful login
     res.status(200).json({ name: user.name, username: user.username, token });
   } catch (err) {
     res.status(500).json({ error: "Login failed" });

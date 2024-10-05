@@ -1,30 +1,13 @@
-const express = require('express');
+const express = require("express");
+const { getPost, createPost } = require('../controllers/PostController');
+const authMiddleware = require('../middleware/authMiddleware')
+
 const router = express.Router();
-const Post = require('../models/Posts');
-const authMiddleware = require('../middleware/authMiddleware');
 
-// Get posts for the feed
-router.get('/', authMiddleware, async (req, res) => {
-  try {
-    const posts = await Post.find().sort({ createdAt: -1 });
-    res.status(200).json(posts);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch posts' });
-  }
-});
+//Get post 
+router.get('/getPost', authMiddleware, getPost);
 
-// Create a new post
-router.post('/', authMiddleware, async (req, res) => {
-  const { content } = req.body;
-  const { username } = req.user; 
-
-  try {
-    const newPost = new Post({ username, content });
-    await newPost.save();
-    res.status(201).json(newPost);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to create post' });
-  }
-});
+// Create post
+router.post("/createPost", authMiddleware, createPost);
 
 module.exports = router;

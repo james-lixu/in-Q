@@ -10,6 +10,7 @@ export const UserProvider = ({ children }) => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem('token');
+        console.log(token)
         
         if (token) {
           const response = await axios.get('/api/users/getUserInfo', {

@@ -4,7 +4,7 @@ const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/users.js");
-const postRoutes = require('./routes/posts')
+const postRoutes = require('./routes/posts.js')
 
 //Express app
 const app = express();

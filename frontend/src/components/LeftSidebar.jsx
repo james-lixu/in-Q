@@ -1,11 +1,12 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useUser } from '../context/UserContext'; 
+import { useUser } from "../context/UserContext";
 import HomeIcon from "../images/Home-Icon.svg";
 import SearchIcon from "../images/Search-Icon.svg";
 import ExploreIcon from "../images/Explore-Icon.svg";
 import MessagesIcon from "../images/Messages-Icon.svg";
 import GamesIcon from "../images/Games-Icon.svg";
+import LogoutIcon from "../images/Logout-Icon.svg";
 
 const inQLogo = require("../images/inQ-Logo.png");
 const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
@@ -13,7 +14,7 @@ const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
 const LeftSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useUser(); //Get user
+  const { user } = useUser();
 
   const isActive = (path) => location.pathname === path;
 
@@ -21,25 +22,32 @@ const LeftSidebar = () => {
     <div className="flex flex-col justify-between h-screen p-8">
       <div className="flex flex-col">
         {/* Display Name and Username */}
-        <div className="flex flex-col mb-4 items-start ml-1">
+        <div className="flex flex-col mb-4 items-start ml-6">
           <div className="flex flex-col items-center">
-            <img 
-              src={defaultProfileIcon} 
-              alt="Default profile icon" 
-              className="w-12 lg:w-20 rounded-full cursor-pointer" 
+            <img
+              src={defaultProfileIcon}
+              alt="Default profile icon"
+              className="w-12 lg:w-20 rounded-full cursor-pointer"
               onClick={() => navigate("/profile")}
             />
             {user ? (
               <>
-                <h2 className="text-slate-100 text-xl font-bold">{user.name}</h2>
-                <span className="text-slate-400 hover:cursor-pointer" onClick={() => navigate("/profile")}>
+                <h2 className="text-slate-100 text-xl font-bold">
+                  {user.name}
+                </h2>
+                <span
+                  className="text-slate-400 hover:cursor-pointer"
+                  onClick={() => navigate("/profile")}
+                >
                   @{user.username}
                 </span>
               </>
             ) : (
               <>
                 <h2 className="text-slate-100 text-xl font-bold">Guest</h2>
-                <span className="text-slate-400 hover:cursor-pointer">@guest</span>
+                <span className="text-slate-400 hover:cursor-pointer">
+                  @guest
+                </span>
               </>
             )}
           </div>
@@ -48,7 +56,9 @@ const LeftSidebar = () => {
         {/* Navigation Buttons */}
         <button
           className={`flex mt-4 p-2 gap-3 focus:font-bold ${
-            isActive("/home") ? "text-slate-100 font-bold underline underline-offset-8" : "text-slate-400"
+            isActive("/home")
+              ? "text-slate-100 font-bold underline underline-offset-8"
+              : "text-slate-400"
           }`}
           onClick={() => navigate("/home")}
         >
@@ -58,17 +68,25 @@ const LeftSidebar = () => {
 
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
-            isActive("/search") ? "text-slate-100 font-bold underline underline-offset-8" : "text-slate-400"
+            isActive("/search")
+              ? "text-slate-100 font-bold underline underline-offset-8"
+              : "text-slate-400"
           }`}
           onClick={() => navigate("/search")}
         >
-          <img src={SearchIcon} alt="Search icon" className="w-7 h-3/4 fill-white" />
+          <img
+            src={SearchIcon}
+            alt="Search icon"
+            className="w-7 h-3/4 fill-white"
+          />
           <span className="hidden lg:block">Search</span>
         </button>
 
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
-            isActive("/explore") ? "text-slate-100 font-bold underline underline-offset-8" : "text-slate-400"
+            isActive("/explore")
+              ? "text-slate-100 font-bold underline underline-offset-8"
+              : "text-slate-400"
           }`}
           onClick={() => navigate("/explore")}
         >
@@ -78,7 +96,9 @@ const LeftSidebar = () => {
 
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
-            isActive("/messages") ? "text-slate-100 font-bold underline underline-offset-8" : "text-slate-400"
+            isActive("/messages")
+              ? "text-slate-100 font-bold underline underline-offset-8"
+              : "text-slate-400"
           }`}
           onClick={() => navigate("/messages")}
         >
@@ -88,7 +108,9 @@ const LeftSidebar = () => {
 
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
-            isActive("/games") ? "text-slate-100 font-bold underline underline-offset-8" : "text-slate-400"
+            isActive("/games")
+              ? "text-slate-100 font-bold underline underline-offset-8"
+              : "text-slate-400"
           }`}
           onClick={() => navigate("/games")}
         >
@@ -98,9 +120,20 @@ const LeftSidebar = () => {
       </div>
 
       {/* Logo */}
-      <button onClick={() => navigate("/home")} className="self-start ml-2 mt-6">
-        <img src={inQLogo} alt="in-Q Logo" className="w-12 lg:w-16" />
-      </button>
+      <div className="flex flex-row space-x-12"> 
+        <button
+          onClick={() => navigate("/home")}
+          className="self-start ml-2 mt-6"
+        >
+          <img src={inQLogo} alt="in-Q Logo" className="w-12 lg:w-16" />
+        </button>
+        <button
+          onClick={() => navigate("/")}
+          className="self-end ml-2 mt-6"
+        >
+          <img src={LogoutIcon} alt="Logout icon" className="w-6 lg:w-8" />
+        </button>
+      </div>
     </div>
   );
 };
