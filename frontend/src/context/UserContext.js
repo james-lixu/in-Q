@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
         console.log(token)
         
         if (token) {
-          const response = await axios.get('/api/users/getUserInfo', {
+          const response = await axios.get('http://localhost:4000/api/users/getUserInfo', {
             headers: { Authorization: `Bearer ${token}` },
           });
           // Set user data in context

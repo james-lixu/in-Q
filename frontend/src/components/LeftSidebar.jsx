@@ -96,18 +96,6 @@ const LeftSidebar = () => {
 
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
-            isActive("/friends")
-              ? "text-slate-100 font-bold underline underline-offset-8"
-              : "text-slate-400"
-          }`}
-          onClick={() => navigate("/friends")}
-        >
-          <img src={FriendsIcon} alt="Friends icon" className="w-7" />
-          <span className="hidden lg:block">Friends</span>
-        </button>
-
-        <button
-          className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/explore")
               ? "text-slate-100 font-bold underline underline-offset-8"
               : "text-slate-400"
@@ -144,10 +132,9 @@ const LeftSidebar = () => {
       </div>
 
       {/* Logout */}
-      <div className="flex flex-row space-x-12">
+      <div className="flex flex-row space-x-12 self-end">
         <button
           onClick={handleLogout}
-          className="self-end ml-2 mt-6"
         >
           <img src={LogoutIcon} alt="Logout icon" className="w-6 lg:w-8" />
         </button>

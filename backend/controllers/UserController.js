@@ -50,18 +50,37 @@ const userLogin = async (req, res) => {
   }
 };
 
-// Get user info 
+// Get user info
 const userInfo = async (req, res) => {
-  const { _id } = req.user; 
+  const { _id } = req.user;
+  const { username } = req.query; 
+
   try {
-    const user = await User.findById(_id).select('name username');
+    let user;
+
+    if (username) {
+      user = await User.findOne({ username }).select('name username followers following');
+    } else {
+      user = await User.findById(_id).select('name username followers following');
+    }
+
     if (!user) return res.status(404).json({ error: 'User not found' });
-    
-    res.status(200).json({ name: user.name, username: user.username });
+
+    const followerCount = user.followers.length;
+    const followingCount = user.following.length;
+
+    res.status(200).json({
+      name: user.name,
+      username: user.username,
+      followerCount, 
+      followingCount
+    });
   } catch (err) {
     res.status(500).json({ error: 'Error fetching user data' });
   }
 };
+
+
 
 const userLogout = (req, res) => {
   res.status(200).json({ message: "Logout successful" });
@@ -96,6 +115,11 @@ const followUser = async (req, res) => {
     const userToFollow = await User.findOne({ username });
     if (!userToFollow) {
       return res.status(404).json({ error: 'User to follow not found' });
+    }
+
+    // Case self-follow
+    if (currentUser._id.equals(userToFollow._id)) {
+      return res.status(400).json({ error: 'Cannot follow your own account' });
     }
 
     // Add current user's ID to the followers array of the user to follow
@@ -156,6 +180,54 @@ const checkFollowing = async (req, res) => {
   res.status(200).json({ isFollowing });
 };
 
+// Check if two users are following each other (friends)
+const checkFriendship = async (req, res) => {
+  const { username } = req.params;
+  const currentUser = req.user; 
+
+  try {
+    const profileUser = await User.findOne({ username });
+    if (!profileUser) return res.status(404).json({ error: 'User not found' });
+
+    // Check if they follow each other
+    const isFriend = profileUser.followers.includes(currentUser._id) && currentUser.followers.includes(profileUser._id);
+
+    res.status(200).json({ isFriend });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const getFriendsList = async (req, res) => {
+  const { _id } = req.user; 
+  try {
+
+    const user = await User.findById(_id).populate({
+      path: 'following',
+      select: 'name username followers',  
+      model: 'User', 
+      populate: {
+        path: 'followers',  
+        select: '_id', 
+      },
+    });
+
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const friends = user.following.filter(friend => {
+      return friend.followers.some(follower => follower._id.equals(_id));
+    });
+
+  } catch (err) {
+    console.error('Error fetching friends:', err); 
+    res.status(500).json({ error: 'Error fetching friends list' });
+  }
+};
+
+
 module.exports = {
     userRegistration,
     userLogin,
@@ -165,4 +237,6 @@ module.exports = {
     unfollowUser,
     getUsername,
     checkFollowing,
+    checkFriendship,
+    getFriendsList,
 }

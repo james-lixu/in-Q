@@ -14,7 +14,7 @@ const MainLayout = ({ children }) => {
       <div className="flex-1 h-screen ml-2 overflow-y-scroll hide-scrollbar">{children}</div>
 
       {/* Right Sidebar */}
-      <div className="h-screen">
+      <div className="h-screen flex p-12">
         <RightSidebar />
       </div>
     </div>
