@@ -21,7 +21,7 @@ const userRegistration = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, username, email, password: hashedPassword });
+    const newUser = new User({ name, username, email, password: hashedPassword, followers: [], following: [], });
     await newUser.save();
     
     const token = createToken(newUser);  
@@ -83,37 +83,65 @@ const getUsername = async (req, res) => {
   }
 };
 
-// Follow a user
 const followUser = async (req, res) => {
   const { username } = req.body;
-  const currentUser = req.user; 
-  const userToFollow = await User.findOne({ username });
-  if (!userToFollow) return res.status(404).json({ error: 'User not found' });
 
-  userToFollow.followers.addToSet(currentUser._id);
-  await userToFollow.save();
+  try {
+    const currentUser = await User.findById(req.user._id); 
+    if (!currentUser) {
+      return res.status(404).json({ error: 'Current user not found' });
+    }
 
-  currentUser.following.addToSet(userToFollow._id);
-  await currentUser.save();
+    // Find the user to follow by username
+    const userToFollow = await User.findOne({ username });
+    if (!userToFollow) {
+      return res.status(404).json({ error: 'User to follow not found' });
+    }
 
-  res.status(200).json({ message: 'User followed successfully' });
-  };
+    // Add current user's ID to the followers array of the user to follow
+    userToFollow.followers.addToSet(currentUser._id);
+    await userToFollow.save();
+
+    // Add the followed user's ID to the following array of the current user
+    currentUser.following.addToSet(userToFollow._id);
+    await currentUser.save();
+
+    res.status(200).json({ message: 'User followed successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
 // Unfollow a user
 const unfollowUser = async (req, res) => {
   const { username } = req.body;
-  const currentUser = req.user;
 
-  const userToUnfollow = await User.findOne({ username });
-  if (!userToUnfollow) return res.status(404).json({ error: 'User not found' });
+  try {
+    const currentUser = await User.findById(req.user._id); 
+    if (!currentUser) {
+      return res.status(404).json({ error: 'Current user not found' });
+    }
 
-  userToUnfollow.followers.pull(currentUser._id);
-  await userToUnfollow.save();
+    // Find the user to unfollow by username
+    const userToUnfollow = await User.findOne({ username });
+    if (!userToUnfollow) {
+      return res.status(404).json({ error: 'User to unfollow not found' });
+    }
 
-  currentUser.following.pull(userToUnfollow._id);
-  await currentUser.save();
+    // Remove the current user's ID from the followers array of the user to unfollow
+    userToUnfollow.followers.pull(currentUser._id);
+    await userToUnfollow.save();
 
-  res.status(200).json({ message: 'User unfollowed successfully' });
+    // Remove the unfollowed user's ID from the following array of the current user
+    currentUser.following.pull(userToUnfollow._id);
+    await currentUser.save();
+
+    res.status(200).json({ message: 'User unfollowed successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
 };
 
 // Check if following

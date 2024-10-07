@@ -16,33 +16,59 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        // Fetch user data
         const response = await axios.get(`http://localhost:4000/api/users/${username}`);
         setUserData(response.data);
-
+  
+        // Get token from localStorage (or however you're storing it)
+        const token = localStorage.getItem('token');
+  
         // Check if the user is following this profile user
-        const followResponse = await axios.get(`http://localhost:4000/api/users/followers/${username}`);
+        const followResponse = await axios.get(
+          `http://localhost:4000/api/users/followers/${username}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
         setIsFollowing(followResponse.data.isFollowing);
-
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch user data");
         setLoading(false);
       }
     };
-
+  
     fetchUserData();
   }, [username]);
+  
 
   const handleFollow = async () => {
     setFollowLoading(true);
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+    
+    if (!token) {
+      console.error("No token found, cannot follow/unfollow");
+      setFollowLoading(false);
+      return;
+    }
+  
     try {
+      const headers = {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      };
+  
       if (isFollowing) {
         // Unfollow API call
-        await axios.post('http://localhost:4000/api/users/unfollow', { username });
+        await axios.post('http://localhost:4000/api/users/unfollow', { username }, headers);
         setIsFollowing(false); 
       } else {
         // Follow API call
-        await axios.post('http://localhost:4000/api/users/follow', { username });
+        await axios.post('http://localhost:4000/api/users/follow', { username }, headers);
         setIsFollowing(true); 
       }
     } catch (error) {
@@ -50,6 +76,7 @@ const Profile = () => {
     }
     setFollowLoading(false);
   };
+  
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;

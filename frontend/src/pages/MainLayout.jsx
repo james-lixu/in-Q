@@ -11,7 +11,7 @@ const MainLayout = ({ children }) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 h-screen ml-2 overflow-y-scroll">{children}</div>
+      <div className="flex-1 h-screen ml-2 overflow-y-scroll hide-scrollbar">{children}</div>
 
       {/* Right Sidebar */}
       <div className="h-screen">

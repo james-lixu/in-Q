@@ -29,8 +29,8 @@ const UserSchema = new Schema(
       trim: true,
     },
 
-    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: Schema.Types.ObjectId, ref: 'User' }], 
+    followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 
     gamingPreferences: {
       status: {
