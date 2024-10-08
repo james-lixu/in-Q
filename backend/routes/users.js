@@ -10,7 +10,7 @@ const {
   checkFollowing,
   checkFriendship,
   getFriendsList,
-  uploadProfileImage
+  uploadProfilePicture
 } = require("../controllers/UserController");
 const authMiddleware = require("../middleware/authMiddleware");
 const upload = require('../middleware/fileUploadMiddleware'); 
@@ -47,6 +47,6 @@ router.get("/check-friendship/:username", authMiddleware, checkFriendship);
 router.get("/friends", authMiddleware, getFriendsList);
 
 // Profile image upload (protected route)
-router.post('/upload-profile-image', authMiddleware, upload.single('profileImage'), uploadProfileImage); 
+router.post('/upload-profile-image', authMiddleware, upload.single('profilePicture'), uploadProfilePicture); 
 
 module.exports = router;

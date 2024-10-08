@@ -59,9 +59,9 @@ const userInfo = async (req, res) => {
     let user;
 
     if (username) {
-      user = await User.findOne({ username }).select('name username followers following');
+      user = await User.findOne({ username }).select('name username followers following profilePicture');
     } else {
-      user = await User.findById(_id).select('name username followers following');
+      user = await User.findById(_id).select('name username followers following profilePicture');
     }
 
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -72,6 +72,7 @@ const userInfo = async (req, res) => {
     res.status(200).json({
       name: user.name,
       username: user.username,
+      profilePicture: user.profilePicture,
       followerCount, 
       followingCount
     });
@@ -232,29 +233,35 @@ const getFriendsList = async (req, res) => {
 };
 
 // Upload profile image
-const uploadProfileImage = async (req, res) => {
+const uploadProfilePicture = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);  
+    console.log('User ID:', req.user._id);  
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    console.log('Uploaded file:', req.file);  
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    user.profileImage = req.file.path;
+    user.profilePicture = `/uploads/${req.file.filename}`;
+    console.log('Updated user profile image:', user.profilePicture);  
+
     await user.save();
+    console.log('User saved:', user);  
 
     res.status(200).json({
       message: 'Profile image uploaded successfully',
-      profileImage: user.profileImage  // Send back the URL to the frontend
+      profilePicture: user.profilePicture
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to upload profile image' });
+    console.error('Error during image upload:', err);  
+    res.status(500).json({ error: 'Server error during image upload' });
   }
 };
+
 
 module.exports = {
     userRegistration,
@@ -267,5 +274,5 @@ module.exports = {
     checkFollowing,
     checkFriendship,
     getFriendsList,
-    uploadProfileImage,
+    uploadProfilePicture,
 }

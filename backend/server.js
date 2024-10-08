@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 //File upload
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static('uploads'));   
 
 //Routes
 app.use("/api/users", userRoutes);
