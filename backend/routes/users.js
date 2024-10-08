@@ -10,9 +10,10 @@ const {
   checkFollowing,
   checkFriendship,
   getFriendsList,
+  uploadProfileImage
 } = require("../controllers/UserController");
 const authMiddleware = require("../middleware/authMiddleware");
-
+const upload = require('../middleware/fileUploadMiddleware'); 
 const router = express.Router();
 
 // User Registration
@@ -44,5 +45,8 @@ router.get("/check-friendship/:username", authMiddleware, checkFriendship);
 
 //Get friends list
 router.get("/friends", authMiddleware, getFriendsList);
+
+// Profile image upload (protected route)
+router.post('/upload-profile-image', authMiddleware, upload.single('profileImage'), uploadProfileImage); 
 
 module.exports = router;

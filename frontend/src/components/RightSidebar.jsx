@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const RightSidebar = () => {
   const [friends, setFriends] = useState([]); 
   const [loading, setLoading] = useState(true);  
   const [error, setError] = useState(null);  
+  
 
   useEffect(() => {
     const fetchFriendsList = async () => {
@@ -52,8 +54,10 @@ const RightSidebar = () => {
             />
             <div>
               <p className="font-bold">{friend.name}</p>
-              <p className="text-sm text-gray-500">@{friend.username}</p>
-            </div>
+              <Link to={`/${friend.username}`}>
+                <p className="text-sm text-gray-500 cursor-pointer">@{friend.username}</p>
+              </Link>
+           </div>
           </li>
         ))}
       </ul>

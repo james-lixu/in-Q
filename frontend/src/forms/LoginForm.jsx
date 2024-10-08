@@ -117,6 +117,7 @@ const LoginForm = () => {
       const response = await axios.post('http://localhost:4000/api/users/login', formData);
       if (response.data.token) {
         localStorage.setItem('token', response.data.token); 
+        localStorage.setItem('username', response.data.username); 
         setUser({ name: response.data.name, username: response.data.username }); 
         navigate("/home");
       }

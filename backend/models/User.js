@@ -32,6 +32,11 @@ const UserSchema = new Schema(
     following: [{ type: Schema.Types.ObjectId, ref: 'User' }], 
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 
+    profilePicture: {
+      type: String,  
+      default: "Default-Profile-Icon.png", 
+    },
+
     gamingPreferences: {
       status: {
         type: String,

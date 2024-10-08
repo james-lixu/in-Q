@@ -80,8 +80,7 @@ const userInfo = async (req, res) => {
   }
 };
 
-
-
+// Log out
 const userLogout = (req, res) => {
   res.status(200).json({ message: "Logout successful" });
 };
@@ -101,7 +100,8 @@ const getUsername = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
+ 
+// Follow a user
 const followUser = async (req, res) => {
   const { username } = req.body;
 
@@ -198,17 +198,19 @@ const checkFriendship = async (req, res) => {
   }
 };
 
+// Get friends list
 const getFriendsList = async (req, res) => {
-  const { _id } = req.user; 
+  const { _id } = req.user;
   try {
+    console.log(`Fetching friends list for user ID: ${_id}`); 
 
     const user = await User.findById(_id).populate({
       path: 'following',
-      select: 'name username followers',  
-      model: 'User', 
+      select: 'name username followers',
+      model: 'User',
       populate: {
-        path: 'followers',  
-        select: '_id', 
+        path: 'followers',
+        select: '_id',
       },
     });
 
@@ -217,16 +219,42 @@ const getFriendsList = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    console.log('Following users:', user.following);
+
     const friends = user.following.filter(friend => {
       return friend.followers.some(follower => follower._id.equals(_id));
     });
-
+    res.status(200).json(friends);
   } catch (err) {
     console.error('Error fetching friends:', err); 
     res.status(500).json({ error: 'Error fetching friends list' });
   }
 };
 
+// Upload profile image
+const uploadProfileImage = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);  
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    user.profileImage = req.file.path;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Profile image uploaded successfully',
+      profileImage: user.profileImage  // Send back the URL to the frontend
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to upload profile image' });
+  }
+};
 
 module.exports = {
     userRegistration,
@@ -239,4 +267,5 @@ module.exports = {
     checkFollowing,
     checkFriendship,
     getFriendsList,
+    uploadProfileImage,
 }

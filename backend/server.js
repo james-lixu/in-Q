@@ -4,7 +4,8 @@ const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/users.js");
-const postRoutes = require('./routes/posts.js')
+const postRoutes = require('./routes/posts.js');
+const path = require('path');
 
 //Express app
 const app = express();
@@ -20,6 +21,9 @@ app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
 });
+
+//File upload
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //Routes
 app.use("/api/users", userRoutes);
