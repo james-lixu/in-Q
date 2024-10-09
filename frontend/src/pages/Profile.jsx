@@ -19,6 +19,7 @@ const Profile = () => {
   const [followLoading, setFollowLoading] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); 
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -51,8 +52,6 @@ const Profile = () => {
         setUserData(response.data);
         setFollowerCount(response.data.followerCount);
         setFollowingCount(response.data.followingCount);
-
-        console.log("Fetched user data:", response.data);
 
         const currentUsername = response.data.username;
         const storedUsername = localStorage.getItem("username");
@@ -124,7 +123,6 @@ const Profile = () => {
     setFollowLoading(false);
   };
 
-  // Handle profile picture file selection
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -133,7 +131,7 @@ const Profile = () => {
   const handleProfileUpdate = async () => {
     const token = localStorage.getItem("token");
     const formData = new FormData();
-    formData.append("profilePicture", selectedFile); // Use the correct field name
+    formData.append("profilePicture", selectedFile); 
 
     try {
       const response = await axios.post(
@@ -147,7 +145,6 @@ const Profile = () => {
         }
       );
 
-      // Update the profile image in the user data
       setUserData({
         ...userData,
         profilePicture: response.data.profilePicture,
@@ -165,9 +162,9 @@ const Profile = () => {
   return (
     <MainLayout>
       <div className="flex flex-col items-center p-8 relative">
-        {/* IRL Profile (Blurred and offset) */}
+        {/* IRL Profile */}
         <div
-          className="w-24 h-24 rounded-full bg-cover bg-center absolute top-8 filter blur-sm"
+          className="w-32 h-32 rounded-full bg-cover bg-center absolute top-8 filter blur-sm"
           style={{
             backgroundImage: `url(${defaultIrlProfileIcon})`,
             transform: "translateX(50%)",
@@ -175,14 +172,36 @@ const Profile = () => {
         ></div>
 
         {/* Gamer Profile */}
-        <img
-          className="w-24 h-24 rounded-full bg-cover bg-center relative z-10 mb-4"
-          src={
-            userData.profilePicture
-              ? `http://localhost:4000${userData.profilePicture}`
-              : defaultProfileIcon
-          }
-          alt={`${userData.username}'s profile`}
+        {isEditing ? (
+          <label htmlFor="fileInput" className="cursor-pointer">
+            <img
+              className="w-32 h-32 rounded-full bg-cover bg-center relative z-10 mb-4"
+              src={
+                userData.profilePicture
+                  ? `http://localhost:4000${userData.profilePicture}`
+                  : defaultProfileIcon
+              }
+              alt={`${userData.username}'s profile`}
+            />
+          </label>
+        ) : (
+          <img
+            className="w-32 h-32 rounded-full bg-cover bg-center relative z-10 mb-4"
+            src={
+              userData.profilePicture
+                ? `http://localhost:4000${userData.profilePicture}`
+                : defaultProfileIcon
+            }
+            alt={`${userData.username}'s profile`}
+          />
+        )}
+
+        {/* Hidden File Input */}
+        <input
+          id="fileInput"
+          type="file"
+          onChange={handleFileChange}
+          style={{ display: "none" }}
         />
 
         <h2 className="text-3xl font-bold text-slate-100">{userData.name}</h2>
@@ -191,17 +210,22 @@ const Profile = () => {
         {/* Edit Profile / Follow-Unfollow Button */}
         {isOwnProfile ? (
           <>
-            <button className="mt-4 px-4 py-2 rounded-lg bg-green-500 text-white">
-              Edit Profile
-            </button>
-            <input type="file" onChange={handleFileChange} className="mt-2" />
-            {selectedFile && (
+            {!isEditing ? (
               <button
-                onClick={handleProfileUpdate}
-                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+                onClick={() => setIsEditing(true)}
+                className="mt-4 px-4 py-2 rounded-lg bg-green-500 text-white"
               >
-                Upload Profile Picture
+                Edit Profile
               </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="mt-2 px-4 py-2 rounded-lg bg-gray-500 text-white"
+                >
+                  Cancel
+                </button>
+              </>
             )}
           </>
         ) : (
@@ -221,7 +245,7 @@ const Profile = () => {
         )}
 
         {/* Follower and Following Counts */}
-        <div className="mt-4">
+        <div className="flex flex-row gap-8 mt-4">
           <p className="text-slate-100">Followers: {followerCount}</p>
           <p className="text-slate-100">Following: {followingCount}</p>
         </div>

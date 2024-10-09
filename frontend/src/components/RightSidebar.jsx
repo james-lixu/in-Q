@@ -48,7 +48,7 @@ const RightSidebar = () => {
         {friends.map(friend => (
           <li key={friend._id} className="flex items-start space-x-4">
             <img
-              src={friend.profileImage || "default-profile-image.png"} 
+              src={friend.profilePicture ? `http://localhost:4000${friend.profilePicture}` : "default-profile-image.png"}
               alt={`${friend.name}'s profile`}
               className="w-10 h-10 rounded-full"
             />

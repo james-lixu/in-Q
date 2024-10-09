@@ -10,12 +10,11 @@ import GamesIcon from "../images/Games-Icon.svg";
 import LogoutIcon from "../images/Logout-Icon.svg";
 import axios from 'axios';
 
-const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
-
 const LeftSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useUser();
+  const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
 
   const handleLogout = () => {
     axios.post('http://localhost:4000/api/users/logout', {}, {
@@ -33,13 +32,13 @@ const LeftSidebar = () => {
   return (
     <div className="flex flex-col justify-between h-screen pt-8 pb-8 pl-16 pr-16">
       <div className="flex flex-col">
-        {/* Display Name and Username */}
+        {/* Display Name, Username, and Profile Picture */}
         <div className="flex flex-col mb-4 items-center">
           <div className="flex flex-col items-center">
             <img
-              src={defaultProfileIcon}
-              alt="Default profile icon"
-              className="w-12 lg:w-20 rounded-full cursor-pointer"
+              src={user && user.profilePicture ? `http://localhost:4000${user.profilePicture}` : defaultProfileIcon} 
+              alt="Profile icon"
+              className="w-20 h-20 lg:w-28 lg:h-28 rounded-full cursor-pointer"
               onClick={() => navigate(`/${user.username}`)}
             />
             {user ? (

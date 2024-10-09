@@ -59,9 +59,9 @@ const userInfo = async (req, res) => {
     let user;
 
     if (username) {
-      user = await User.findOne({ username }).select('name username followers following profilePicture');
+      user = await User.findOne({ username }).select('name username followers following profilePicture irlProfilePicture');
     } else {
-      user = await User.findById(_id).select('name username followers following profilePicture');
+      user = await User.findById(_id).select('name username followers following profilePicture irlProfilePicture');
     }
 
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -73,6 +73,7 @@ const userInfo = async (req, res) => {
       name: user.name,
       username: user.username,
       profilePicture: user.profilePicture,
+      irlProfilePicture: user.irlProfilePicture,
       followerCount, 
       followingCount
     });
@@ -207,7 +208,7 @@ const getFriendsList = async (req, res) => {
 
     const user = await User.findById(_id).populate({
       path: 'following',
-      select: 'name username followers',
+      select: 'name username followers profilePicture',
       model: 'User',
       populate: {
         path: 'followers',
@@ -232,7 +233,7 @@ const getFriendsList = async (req, res) => {
   }
 };
 
-// Upload profile image
+// Upload gamer profile image
 const uploadProfilePicture = async (req, res) => {
   try {
     console.log('User ID:', req.user._id);  
@@ -262,6 +263,36 @@ const uploadProfilePicture = async (req, res) => {
   }
 };
 
+// Upload IRL profile image
+const uploadIRLProfilePicture = async (req, res) => {
+  try {
+    console.log('User ID:', req.user._id);  
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    console.log('Uploaded file:', req.file);  
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    user.irlProfilePicture = `/uploads/${req.file.filename}`;
+    console.log('Updated user profile image:', user.irlProfilePicture);  
+
+    await user.save();
+    console.log('User saved:', user);  
+
+    res.status(200).json({
+      message: 'Profile image uploaded successfully',
+      irlProfilePicture: user.irlProfilePicture
+    });
+  } catch (err) {
+    console.error('Error during image upload:', err);  
+    res.status(500).json({ error: 'Server error during image upload' });
+  }
+};
+
 
 module.exports = {
     userRegistration,
@@ -275,4 +306,5 @@ module.exports = {
     checkFriendship,
     getFriendsList,
     uploadProfilePicture,
+    uploadIRLProfilePicture,
 }

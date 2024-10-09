@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
+const defaultProfileIcon = "/uploads/Default-Profile-Icon.png";
+const defaultIRLProfileIcon = "/uploads/Default-IRL-Profile-Icon.png";
+
+
 const UserSchema = new Schema(
   {
     name: {
@@ -34,7 +38,12 @@ const UserSchema = new Schema(
 
     profilePicture: {
       type: String,  
-      default: "Default-Profile-Icon.png", 
+      default: defaultProfileIcon, 
+    },
+
+    irlProfilePicture: {
+      type: String,
+      default: defaultIRLProfileIcon,
     },
 
     gamingPreferences: {
