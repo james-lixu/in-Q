@@ -5,6 +5,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/users.js");
 const postRoutes = require('./routes/posts.js');
+const conversationsRoutes = require('./routes/conversations.js');
 const path = require('path');
 
 //Express app
@@ -28,6 +29,7 @@ app.use('/uploads', express.static('uploads'));
 //Routes
 app.use("/api/users", userRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/conversations', conversationsRoutes)
 
 //Connect to MongoDB using mongoose
 mongoose

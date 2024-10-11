@@ -1,4 +1,4 @@
-const Conversation = require("../models/Conversation");
+const Conversation = require("../models/Conversations");
 const Message = require("../models/Messages");
 
 // Create a new conversation 
@@ -19,7 +19,6 @@ const sendMessage = async (req, res) => {
   });
   await newMessage.save();
 
-  // Update the conversation with the last message and timestamp
   await Conversation.findByIdAndUpdate(conversationId, {
     lastMessage: message,
     updatedAt: Date.now(),
@@ -35,12 +34,22 @@ const getMessageHistory = async (req, res) => {
   res.status(200).json(messages);
 };
 
-// Fetch all conversations for a user
+// Get all conversations for the authenticated user
 const getUserConversations = async (req, res) => {
-  const { userId } = req.params;
-  const conversations = await Conversation.find({ participants: userId }).sort('updatedAt');
-  res.status(200).json(conversations);
+  try {
+    const userId = req.user._id;  // Get the user ID from the authentication middleware
+    const conversations = await Conversation.find({ participants: userId }).sort('updatedAt');
+    res.status(200).json(conversations);
+  } catch (err) {
+    console.error("Error fetching conversations:", err);
+    res.status(500).json({ error: "Failed to fetch conversations" });
+  }
 };
+
+module.exports = {
+  getUserConversations
+};
+
 
 module.exports = {
   createConversation,

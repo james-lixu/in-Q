@@ -1,5 +1,5 @@
 const express = require("express");
-const { sendMessage, getMessageHistory, getMessageHistory, getUserConversations} = require('../controllers/ConversationController');
+const { createConversation, sendMessage, getMessageHistory, getUserConversations} = require('../controllers/ConversationController');
 const authMiddleware = require('../middleware/authMiddleware')
 
 const router = express.Router();
@@ -14,6 +14,6 @@ router.post('/sendMessage', authMiddleware, sendMessage);
 router.get("/getMessageHistory/:conversationId", authMiddleware, getMessageHistory);
 
 //Get all conversations
-router.get("/getUserConversations/:userId", authMiddleware, getUserConversations);
+router.get("/getUserConversations", authMiddleware, getUserConversations);
 
 module.exports = router;

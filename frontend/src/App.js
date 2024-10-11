@@ -8,6 +8,7 @@ import Explore from "./pages/Explore";
 import Search from "./pages/Search";
 import Games from "./pages/Games";
 import Profile from "./pages/Profile";
+import FriendList from "./components/FriendsList";
 import { UserProvider } from "./context/UserContext";
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
               <Route path="/explore" element={<Explore />} />
               <Route path="/messages" element={<Messsages />} />
               <Route path="/games" element={<Games />} />
+              <Route path="/select-friend" element={<FriendList />} />
             </Routes>
           </div>
         </BrowserRouter>
