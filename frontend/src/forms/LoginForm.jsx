@@ -118,7 +118,10 @@ const LoginForm = () => {
       if (response.data.token) {
         localStorage.setItem('token', response.data.token); 
         localStorage.setItem('username', response.data.username); 
+        localStorage.setItem("userId", response.data._id);  
         setUser({ name: response.data.name, username: response.data.username }); 
+        console.log("User ID stored in localStorage:", localStorage.getItem("userId"));
+
         navigate("/home");
       }
     } catch (error) {

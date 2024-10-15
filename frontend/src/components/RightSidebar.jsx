@@ -31,24 +31,32 @@ const RightSidebar = () => {
   const handleStartChat = async (friend) => {
     try {
       const token = localStorage.getItem("token");
-
-      // Check if a conversation already exists
+      const currentUserId = localStorage.getItem("userId");
+  
+      if (!currentUserId) {
+        console.error("User ID is not set in localStorage");
+        return;
+      }
+  
       const response = await axios.get(`http://localhost:4000/api/conversations/getUserConversations`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
-      let conversation = response.data.find(convo => convo.participants.includes(friend._id));
-
-      // If no conversation exists, create one
+  
+      let conversation = response.data.find(convo => 
+        convo.participants.every(participant => participant) &&  
+        convo.participants.some(participant => participant.toString() === friend._id.toString()) &&
+        convo.participants.some(participant => participant.toString() === currentUserId.toString())
+      );
+  
       if (!conversation) {
         const createResponse = await axios.post(
           "http://localhost:4000/api/conversations/createConversation",
-          { participants: [friend._id] },  // Add friend as participant
+          { participants: [friend._id, currentUserId] },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         conversation = createResponse.data;
       }
-
+  
       const isChatOpen = openChats.find(chat => chat.friend._id === friend._id);
       if (!isChatOpen) {
         setOpenChats([...openChats, { friend, conversationId: conversation._id }]);
@@ -57,7 +65,7 @@ const RightSidebar = () => {
       console.error('Error starting conversation:', err);
     }
   };
-
+  
   // Close a Chatbox
   const handleCloseChat = (friendId) => {
     setOpenChats(openChats.filter(chat => chat.friend._id !== friendId));  

@@ -25,8 +25,13 @@ const userRegistration = async (req, res) => {
     await newUser.save();
     
     const token = createToken(newUser);  
-    res.status(200).json({ email: newUser.email, token });
-  } catch (err) {
+    res.status(200).json({
+      _id: newUser._id,
+      name: newUser.name,
+      username: newUser.username,
+      email: newUser.email,
+      token,
+    });  } catch (err) {
     res.status(500).json({ error: "Error registering user" });
   }
 };
@@ -44,8 +49,12 @@ const userLogin = async (req, res) => {
 
     const token = createToken(user); 
     
-    res.status(200).json({ name: user.name, username: user.username, token });
-  } catch (err) {
+    res.status(200).json({
+      _id: user._id, 
+      name: user.name,
+      username: user.username,
+      token,
+    });  } catch (err) {
     res.status(500).json({ error: "Login failed" });
   }
 };
