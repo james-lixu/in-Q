@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import EmptyIcon from "../images/Empty.png";
-import { useNavigate } from "react-router-dom"; // To navigate to the friends list
+import { useNavigate } from "react-router-dom"; 
 
 const ConversationList = ({ onSelectConversation }) => {
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();  // Hook to navigate
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -37,7 +37,7 @@ const ConversationList = ({ onSelectConversation }) => {
           <img src={EmptyIcon} alt="No conversations" className="w-40 h-40" />
           <p>No conversations found.</p>
           <button
-            onClick={() => navigate("/select-friend")} // Navigate to the friend selection screen
+            onClick={() => navigate("/select-friend")} 
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
           >
             Start New Conversation
@@ -63,12 +63,6 @@ const ConversationList = ({ onSelectConversation }) => {
           ))}
         </div>
       )}
-      <button
-        onClick={() => navigate("/select-friend")} 
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
-      >
-        Start New Conversation
-      </button>
     </div>
   );
 };

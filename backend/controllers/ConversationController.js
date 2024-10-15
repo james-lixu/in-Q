@@ -1,5 +1,6 @@
 const Conversation = require("../models/Conversations");
 const Message = require("../models/Messages");
+const mongoose = require("mongoose");
 
 // Create a new conversation 
 const createConversation = async (req, res) => {
@@ -14,7 +15,7 @@ const sendMessage = async (req, res) => {
   const { conversationId, senderId, message } = req.body;
   const newMessage = new Message({
     conversationId,
-    sender: senderId,
+    sender: req.user._id,
     message,
   });
   await newMessage.save();
@@ -30,14 +31,24 @@ const sendMessage = async (req, res) => {
 // Fetch message history
 const getMessageHistory = async (req, res) => {
   const { conversationId } = req.params;
-  const messages = await Message.find({ conversationId }).sort('createdAt');
-  res.status(200).json(messages);
+
+  if (!mongoose.Types.ObjectId.isValid(conversationId)) {
+    return res.status(400).json({ error: 'Invalid conversationId' });
+  }
+
+  try {
+    const messages = await Message.find({ conversationId }).sort('createdAt');
+    res.status(200).json(messages);
+  } catch (err) {
+    console.error("Error fetching message history:", err);
+    res.status(500).json({ error: "Failed to fetch message history" });
+  }
 };
 
 // Get all conversations for the authenticated user
 const getUserConversations = async (req, res) => {
   try {
-    const userId = req.user._id;  // Get the user ID from the authentication middleware
+    const userId = req.user._id;  
     const conversations = await Conversation.find({ participants: userId }).sort('updatedAt');
     res.status(200).json(conversations);
   } catch (err) {
