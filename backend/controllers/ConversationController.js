@@ -22,11 +22,10 @@ const createConversation = async (req, res) => {
   }
 };
 
-
-// Send a message 
+// Send a message
 const sendMessage = async (req, res) => {
   const { conversationId, message } = req.body;
-  console.log("Sending message to conversation:", conversationId); // Log conversationId
+  console.log("Sending message to conversation:", conversationId);
   console.log("Message content:", message);
 
   if (!mongoose.Types.ObjectId.isValid(conversationId)) {
@@ -39,41 +38,36 @@ const sendMessage = async (req, res) => {
       sender: req.user._id, 
       message,
     });
-
     await newMessage.save();
-    console.log("Message saved successfully:", newMessage);
+
+    const populatedMessage = await newMessage.populate('sender', 'name username');
 
     await Conversation.findByIdAndUpdate(conversationId, {
       lastMessage: message,
       updatedAt: Date.now(),
     });
 
-    res.status(200).json(newMessage); 
+    res.status(200).json(populatedMessage);
   } catch (err) {
     console.error("Error sending message:", err);
     res.status(500).json({ error: "Failed to send message" });
   }
 };
 
-
+// Get message history
 const getMessageHistory = async (req, res) => {
   const { conversationId } = req.params;
 
-  // Check if the conversationId is valid
   if (!mongoose.Types.ObjectId.isValid(conversationId)) {
-    console.error("Invalid conversationId:", conversationId);
     return res.status(400).json({ error: 'Invalid conversationId' });
   }
 
   try {
+    // Fetch and populate the sender for each message
+    const messages = await Message.find({ conversationId })
+      .populate('sender', 'name username')
+      .sort('createdAt');
 
-    const messages = await Message.find({ conversationId }).sort('createdAt');
-
-    if (messages.length === 0) {
-      console.warn("No messages found for conversationId:", conversationId);
-    } else {
-      console.log("Fetched messages from database:", messages);
-    }
     res.status(200).json(messages);
   } catch (err) {
     console.error("Error fetching message history:", err);

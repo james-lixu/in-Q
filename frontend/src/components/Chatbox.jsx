@@ -1,33 +1,32 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const ChatBox = ({ friend, conversationId, onClose }) => {
+const Chatbox = ({ friend, conversationId, onClose }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
     const fetchMessages = async () => {
-      console.log("Fetching messages for conversationId:", conversationId);  // Log conversationId
+      console.log("Fetching messages for conversationId:", conversationId);
       try {
         const token = localStorage.getItem('token');
         const response = await axios.get(`http://localhost:4000/api/conversations/getMessageHistory/${conversationId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        console.log("Fetched messages:", response.data);  // Log the fetched messages
-        setMessages(response.data);  // Store the messages in state
+        console.log("Fetched messages:", response.data);
+        setMessages(response.data);  
       } catch (err) {
         console.error("Error fetching messages:", err);
       }
     };
 
     if (conversationId) {
-      fetchMessages();  
+      fetchMessages();
     } else {
       console.warn("conversationId is undefined or invalid:", conversationId);
     }
-  }, [conversationId]);  
+  }, [conversationId]);
 
-  // Handle sending a new message
   const handleSendMessage = async () => {
     console.log("Sending new message:", newMessage);
     try {
@@ -37,9 +36,9 @@ const ChatBox = ({ friend, conversationId, onClose }) => {
         { conversationId, message: newMessage },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Message sent successfully:", response.data);  // Log the new message response
-      setMessages([...messages, response.data]);  // Append the new message
-      setNewMessage("");  // Clear the input field
+      console.log("Message sent successfully:", response.data);
+      setMessages([...messages, response.data]);  
+      setNewMessage("");  
     } catch (err) {
       console.error("Error sending message:", err);
     }
@@ -74,4 +73,4 @@ const ChatBox = ({ friend, conversationId, onClose }) => {
   );
 };
 
-export default ChatBox;
+export default Chatbox;
