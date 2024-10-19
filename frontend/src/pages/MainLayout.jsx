@@ -14,17 +14,17 @@ const MainLayout = ({ children }) => {
       {/* Main content area - Adjust for navbar height */}
       <div className="flex flex-row flex-1 pt-12 min-h-0">
         {/* Left Sidebar */}
-        <div className="w-64 h-full overflow-hidden">
+        <div className="w-1/4 h-full overflow-hidden">
           <LeftSidebar />
         </div>
 
         {/* Main Content */}
-        <div className="flex flex-1 flex-col p-4 overflow-y-auto hide-scrollbar">
+        <div className="flex flex-1 flex-col p-4 overflow-y-auto hide-scrollbar w-2/4">
           {children}
         </div>
 
         {/* Right Sidebar */}
-        <div className="w-64 hidden lg:flex h-full overflow-y-auto">
+        <div className="hidden lg:flex h-full overflow-y-auto w-1/4">
           <RightSidebar />
         </div>
       </div>

@@ -17,22 +17,24 @@ const getPost = async (req, res) => {
   }
 };
 
-// Create a new post
+// Create a post
 const createPost = async (req, res) => {
-    const { content } = req.body;
-  
-    console.log('req.user:', req.user);  
-    const { username } = req.user;  
-  
-    try {
-      const newPost = new Post({ username, content });
-      await newPost.save();
-      res.status(201).json(newPost);
-    } catch (err) {
-      console.error('Error creating post:', err);  
-      res.status(500).json({ error: 'Failed to create post' });
-    }
-  };
+  const { content } = req.body;
+
+  console.log('req.user:', req.user);
+  const { username } = req.user;
+
+  try {
+    // If an image was uploaded
+    const image = req.file ? `/uploads/post_images/${req.file.filename}` : null;
+    const newPost = new Post({ username, content, image });
+    await newPost.save();
+    res.status(201).json(newPost);
+  } catch (err) {
+    console.error('Error creating post:', err);
+    res.status(500).json({ error: 'Failed to create post' });
+  }
+};
 
   const deletePost = async (req, res) => {
     const { id } = req.params; 

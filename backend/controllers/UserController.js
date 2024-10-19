@@ -256,7 +256,7 @@ const uploadProfilePicture = async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    user.profilePicture = `/uploads/${req.file.filename}`;
+    user.profilePicture = `/uploads/profile_pictures/${req.file.filename}`;
     console.log('Updated user profile image:', user.profilePicture);  
 
     await user.save();

@@ -8,16 +8,26 @@ const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
 
 const CreatePost = ({ onPostCreated }) => {
   const [content, setContent] = useState("");
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file); 
+      setImagePreview(URL.createObjectURL(file)); 
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!content.trim()) {
-      setError("Post content cannot be empty.");
+    if (!content.trim() && !image) {
+      setError("Post content or image cannot be empty.");
       return;
     }
 
@@ -25,14 +35,26 @@ const CreatePost = ({ onPostCreated }) => {
     setError("");
 
     try {
+      const formData = new FormData();
+      formData.append("content", content);
+      if (image) {
+        formData.append("image", image);
+      }
+
       const response = await axios.post(
         "http://localhost:4000/api/posts/createPost",
-        { content },
+        formData,
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            'Content-Type': 'multipart/form-data',
+          },
         }
       );
+
       setContent("");
+      setImage(null); 
+      setImagePreview(null); 
       setLoading(false);
 
       if (onPostCreated) {
@@ -64,19 +86,40 @@ const CreatePost = ({ onPostCreated }) => {
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="flex-grow ml-4 p-2 bg-gray-800 rounded-lg text-text focus:outline-none"
+            className="flex-grow h-14 ml-4 p-2 bg-gray-800 rounded-lg text-text focus:outline-none"
             placeholder="Type here..."
           />
         </div>
 
-        {/* Error message */}
         {error && <p className="text-red-500">{error}</p>}
+
+        {imagePreview && (
+          <div className="mb-4 flex justify-center">
+            <img 
+              src={imagePreview} 
+              alt="Image preview" 
+              className="w-3/4 h-auto rounded-lg mx-auto" 
+            />
+          </div>
+        )}
 
         <div className="flex justify-between mt-4">
           <div className="flex gap-4">
-            <button type="button" className="flex items-center text-neon-green">
+            <button 
+              type="button" 
+              className="flex items-center text-neon-green"
+              onClick={() => document.getElementById('fileInput').click()}
+            >
               <FaPhotoVideo className="mr-1" /> Photo
             </button>
+
+            <input 
+              id="fileInput" 
+              type="file" 
+              accept="image/*" 
+              style={{ display: 'none' }} 
+              onChange={handleImageChange} 
+            />
 
             <button type="button" className="flex items-center text-primary">
               <FaVideo className="mr-1" /> Video
@@ -91,7 +134,6 @@ const CreatePost = ({ onPostCreated }) => {
             </button>
           </div>
 
-          {/* Post button */}
           <button
             type="submit"
             className="bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-600"

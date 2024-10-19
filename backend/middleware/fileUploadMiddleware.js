@@ -3,11 +3,14 @@ const path = require('path');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/');  
+    if (!req.folder) {
+      return cb(new Error('Folder not set in request.'), false);  
+    }
+    cb(null, req.folder);  
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
+    cb(null, uniqueSuffix + '-' + file.originalname);  
   }
 });
 
@@ -17,16 +20,15 @@ const fileFilter = (req, file, cb) => {
   const mimetype = fileTypes.test(file.mimetype);
 
   if (mimetype && extname) {
-    return cb(null, true);
+    cb(null, true);  
   } else {
-    cb('Error: Images Only!');
+    cb(new Error('Only images are allowed!'), false);  
   }
 };
 
-// Set up Multer middleware
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 }, //Limit: 5MB
+  limits: { fileSize: 1024 * 1024 * 5 },  // 5MB file size limit
   fileFilter: fileFilter
 });
 
