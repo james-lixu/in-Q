@@ -3,12 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import HomeIcon from "../images/Home-Icon.svg";
 import SearchIcon from "../images/Search-Icon.svg";
-import FriendsIcon from "../images/Friends-Icon.svg";
 import ExploreIcon from "../images/Explore-Icon.svg";
 import MessagesIcon from "../images/Messages-Icon.svg";
 import GamesIcon from "../images/Games-Icon.svg";
-import LogoutIcon from "../images/Logout-Icon.svg";
-import axios from 'axios';
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
@@ -16,21 +13,10 @@ const LeftSidebar = () => {
   const { user } = useUser();
   const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
 
-  const handleLogout = () => {
-    axios.post('http://localhost:4000/api/users/logout', {}, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then(() => {
-      localStorage.removeItem('token');
-      navigate("/");
-    }).catch((err) => {
-      console.error('Error during logout', err);
-    });
-  };
-
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="flex flex-col justify-between h-screen pt-8 pb-8 pl-16 pr-16">
+    <div className="flex flex-col justify-between h-screen pt-8 pb-8 pl-12 pr-12">
       <div className="flex flex-col">
         {/* Display Name, Username, and Profile Picture */}
         <div className="flex flex-col mb-4 items-center">
@@ -43,11 +29,11 @@ const LeftSidebar = () => {
             />
             {user ? (
               <>
-                <h2 className="text-slate-100 text-xl font-bold">
+                <h2 className="text-text text-xl font-bold">
                   {user.name}
                 </h2>
                 <span
-                  className="text-slate-400 hover:cursor-pointer"
+                  className="text-text hover:cursor-pointer"
                   onClick={() => navigate(`/${user.username}`)}
                 >
                   @{user.username}
@@ -55,8 +41,8 @@ const LeftSidebar = () => {
               </>
             ) : (
               <>
-                <h2 className="text-slate-100 text-xl font-bold">Guest</h2>
-                <span className="text-slate-400 hover:cursor-pointer">
+                <h2 className="text-text text-xl font-bold">Guest</h2>
+                <span className="text-text hover:cursor-pointer">
                   @guest
                 </span>
               </>
@@ -68,8 +54,8 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-4 p-2 gap-3 focus:font-bold ${
             isActive("/home")
-              ? "text-slate-100 font-bold underline underline-offset-8"
-              : "text-slate-400"
+              ? "text-text font-bold underline underline-offset-8"
+              : "text-text"
           }`}
           onClick={() => navigate("/home")}
         >
@@ -80,8 +66,8 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/search")
-              ? "text-slate-100 font-bold underline underline-offset-8"
-              : "text-slate-400"
+              ? "text-text font-bold underline underline-offset-8"
+              : "text-text"
           }`}
           onClick={() => navigate("/search")}
         >
@@ -96,8 +82,8 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/explore")
-              ? "text-slate-100 font-bold underline underline-offset-8"
-              : "text-slate-400"
+              ? "text-text font-bold underline underline-offset-8"
+              : "text-text"
           }`}
           onClick={() => navigate("/explore")}
         >
@@ -108,8 +94,8 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/messages")
-              ? "text-slate-100 font-bold underline underline-offset-8"
-              : "text-slate-400"
+              ? "text-text font-bold underline underline-offset-8"
+              : "text-text"
           }`}
           onClick={() => navigate("/messages")}
         >
@@ -120,22 +106,13 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/games")
-              ? "text-slate-100 font-bold underline underline-offset-8"
-              : "text-slate-400"
+              ? "text-text font-bold underline underline-offset-8"
+              : "text-text"
           }`}
           onClick={() => navigate("/games")}
         >
           <img src={GamesIcon} alt="Games icon" className="w-7" />
           <span className="hidden lg:block">Games</span>
-        </button>
-      </div>
-
-      {/* Logout */}
-      <div className="flex flex-row space-x-12 self-end">
-        <button
-          onClick={handleLogout}
-        >
-          <img src={LogoutIcon} alt="Logout icon" className="w-6 lg:w-8" />
         </button>
       </div>
     </div>

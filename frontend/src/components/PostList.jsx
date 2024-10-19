@@ -79,10 +79,10 @@ const PostList = () => {
       {error && <p>{error}</p>}
       {posts.length === 0 && !loading && <p>No posts yet.</p>}
       {posts.map((post) => (
-        <div key={post._id} className="feed-item bg-slate-800 rounded-xl shadow-md p-4 mb-4">
+        <div key={post._id} className="feed-item bg-black border border-slate-800 shadow-md p-4 mb-4">
           <div className="flex items-center mb-2">
             <h3 className="font-bold">{post.username}</h3>
-            <span className="text-gray-500 ml-2 text-sm">
+            <span className="text-text ml-2 text-sm">
               {new Date(post.createdAt).toLocaleString()}
             </span>
           </div>

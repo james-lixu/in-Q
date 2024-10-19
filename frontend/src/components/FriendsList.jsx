@@ -27,18 +27,18 @@ const FriendList = () => {
   const handleStartConversation = async (friendId) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:4000/api/conversations/createConversation",
         { participants: [friendId] },  
         {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
-      navigate("/messages");  // Navigate back to the conversation list
+      navigate("/messages");  
     } catch (err) {
       console.error("Error starting conversation:", err);
     }
-  };
+  };  
 
   if (loading) return <p>Loading friends...</p>;
 

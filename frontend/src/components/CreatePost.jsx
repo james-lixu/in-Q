@@ -41,7 +41,7 @@ const CreatePost = ({ onPostCreated }) => {
   };
 
   return (
-    <div className="border border-slate-700 rounded-xl p-2 mb-4">
+    <div className="border border-slate-800 rounded-xl p-2 mb-4">
       <form
         onSubmit={handleSubmit}
         className="bg-dark p-4 rounded-lg shadow-md"
@@ -55,7 +55,7 @@ const CreatePost = ({ onPostCreated }) => {
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="flex-grow ml-4 p-2 bg-gray-800 rounded-lg text-white"
+            className="flex-grow ml-4 p-2 bg-gray-800 rounded-lg text-text focus:outline-none"
             placeholder="..."
           />
         </div>
@@ -67,28 +67,28 @@ const CreatePost = ({ onPostCreated }) => {
           <div className="flex gap-4">
             <button
               type="button"
-              className="flex items-center text-gray-400 hover:text-green-500"
+              className="flex items-center text-neon-green"
             >
               <FaPhotoVideo className="mr-1" /> Photo
             </button>
 
             <button
               type="button"
-              className="flex items-center text-gray-400 hover:text-blue-500"
+              className="flex items-center text-primary"
             >
               <FaVideo className="mr-1" /> Video
             </button>
 
             <button
               type="button"
-              className="flex items-center text-gray-400 hover:text-red-500"
+              className="flex items-center text-secondary"
             >
               <FaStream className="mr-1" /> Thread
             </button>
 
             <button
               type="button"
-              className="flex items-center text-gray-400 hover:text-yellow-500"
+              className="flex items-center text-accent"
             >
               <FaCalendarAlt className="mr-1" /> Schedule
             </button>

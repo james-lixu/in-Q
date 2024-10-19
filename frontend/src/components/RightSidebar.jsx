@@ -1,27 +1,30 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Chatbox from "./Chatbox";  
+import Chatbox from "./Chatbox";
 
 const RightSidebar = () => {
   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [openChats, setOpenChats] = useState([]);  
+  const [openChats, setOpenChats] = useState([]);
 
   useEffect(() => {
     const fetchFriendsList = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:4000/api/users/friends', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:4000/api/users/friends",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setFriends(response.data);
         setLoading(false);
       } catch (err) {
-        console.error('Failed to fetch friends list:', err);
-        setError('Failed to load friends list');
+        console.error("Failed to fetch friends list:", err);
+        setError("Failed to load friends list");
         setLoading(false);
       }
     };
@@ -32,22 +35,30 @@ const RightSidebar = () => {
     try {
       const token = localStorage.getItem("token");
       const currentUserId = localStorage.getItem("userId");
-  
+
       if (!currentUserId) {
         console.error("User ID is not set in localStorage");
         return;
       }
-  
-      const response = await axios.get(`http://localhost:4000/api/conversations/getUserConversations`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-  
-      let conversation = response.data.find(convo => 
-        convo.participants.every(participant => participant) &&  
-        convo.participants.some(participant => participant.toString() === friend._id.toString()) &&
-        convo.participants.some(participant => participant.toString() === currentUserId.toString())
+
+      const response = await axios.get(
+        `http://localhost:4000/api/conversations/getUserConversations`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-  
+
+      let conversation = response.data.find(
+        (convo) =>
+          convo.participants.every((participant) => participant) &&
+          convo.participants.some(
+            (participant) => participant.toString() === friend._id.toString()
+          ) &&
+          convo.participants.some(
+            (participant) => participant.toString() === currentUserId.toString()
+          )
+      );
+
       if (!conversation) {
         const createResponse = await axios.post(
           "http://localhost:4000/api/conversations/createConversation",
@@ -56,51 +67,67 @@ const RightSidebar = () => {
         );
         conversation = createResponse.data;
       }
-  
-      const isChatOpen = openChats.find(chat => chat.friend._id === friend._id);
+
+      const isChatOpen = openChats.find(
+        (chat) => chat.friend._id === friend._id
+      );
       if (!isChatOpen) {
-        setOpenChats([...openChats, { friend, conversationId: conversation._id }]);
+        setOpenChats([
+          ...openChats,
+          { friend, conversationId: conversation._id },
+        ]);
       }
     } catch (err) {
-      console.error('Error starting conversation:', err);
+      console.error("Error starting conversation:", err);
     }
   };
-  
+
   // Close a Chatbox
   const handleCloseChat = (friendId) => {
-    setOpenChats(openChats.filter(chat => chat.friend._id !== friendId));  
+    setOpenChats(openChats.filter((chat) => chat.friend._id !== friendId));
   };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="right-sidebar">
-      <h2 className="text-xl font-bold mb-4 ml-5">Friends</h2>
-      <ul>
-        {friends.map(friend => (
-          <li key={friend._id} className="flex items-start space-x-4">
-            <img
-              src={friend.profilePicture ? `http://localhost:4000${friend.profilePicture}` : "default-profile-image.png"}
-              alt={`${friend.name}'s profile`}
-              className="w-10 h-10 rounded-full"
-              onDoubleClick={() => handleStartChat(friend)} 
-            />
-            <div>
-              <p className="font-bold">{friend.name}</p>
-              <p className="text-sm text-gray-500 cursor-pointer">@{friend.username}</p>
+    <div className="right-sidebar w-full h-screen">
+      <h2 className="text-xl font-bold self-center mt-8">Friends</h2>
+      <ul className="w-full">
+        {friends.map((friend) => (
+          <li
+            key={friend._id}
+            className="inline-flex items-center justify-start space-x-3 w-full p-1 pl-4 hover:bg-gray-800 rounded-md"
+            onDoubleClick={() => handleStartChat(friend)}
+          >
+            <div className="w-10 h-8 mt-1 rounded-full overflow-hidden">
+              <img
+                src={
+                  friend.profilePicture
+                    ? `http://localhost:4000${friend.profilePicture}`
+                    : "default-profile-image.png"
+                }
+                alt={`${friend.name}'s profile`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <div className="flex flex-col text-left w-full">
+              <p className="font-bold select-none">{friend.name}</p>
+              <p className="text-sm text-gray-500 select-none">
+                @{friend.username}
+              </p>
             </div>
           </li>
         ))}
       </ul>
-
       <div className="fixed bottom-0 right-0 flex space-x-2">
         {openChats.map((chat) => (
           <Chatbox
             key={chat.friend._id}
             friend={chat.friend}
-            conversationId={chat.conversationId}  
-            onClose={() => handleCloseChat(chat.friend._id)}  
+            conversationId={chat.conversationId}
+            onClose={() => handleCloseChat(chat.friend._id)}
           />
         ))}
       </div>

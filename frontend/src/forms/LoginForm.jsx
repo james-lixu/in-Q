@@ -7,7 +7,7 @@ const inQLogo = require("../images/inQ-Logo.png");
 
 const FloatingLabelInput = ({ label, type, name, value, onChange, error }) => {
   const [isFocused, setIsFocused] = useState(false);
-
+  
   const handleFocus = () => setIsFocused(true);
   const handleBlur = (e) => {
     if (!e.target.value) {
@@ -48,6 +48,7 @@ const FloatingLabelInput = ({ label, type, name, value, onChange, error }) => {
 const LoginForm = () => {
   const navigate = useNavigate();
   const { setUser } = useUser(); 
+  const { refetchUser } = useUser();
 
   // Define loading state
   const [loading, setLoading] = useState(false);
@@ -122,6 +123,7 @@ const LoginForm = () => {
         setUser({ name: response.data.name, username: response.data.username }); 
         console.log("User ID stored in localStorage:", localStorage.getItem("userId"));
 
+        await refetchUser();
         navigate("/home");
       }
     } catch (error) {

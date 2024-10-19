@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply font-robotoMono bg-primary text-white leading-loose
+    @apply font-robotoMono bg-background text-text leading-loose;
   }
 }
 
@@ -20,11 +20,12 @@
   }
 }
 
+/* Hide scrollbar */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
 .hide-scrollbar {
   -ms-overflow-style: none;
-  scrollbar-width: none; 
+  scrollbar-width: none;
 }

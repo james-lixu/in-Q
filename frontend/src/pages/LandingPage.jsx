@@ -46,7 +46,7 @@ const LandingPage = () => {
           <h1 className="text-4xl font-bold">Find Your Queue.</h1>
           <div className="w-64 h-px bg-gray-500"></div>
           <button
-            className="rounded-full pt-2 pb-2 pl-10 pr-10 text-sm bg-dark-gray hover:bg-slate-600"
+            className="rounded-full pt-2 pb-2 pl-10 pr-10 text-sm bg-slate-600 hover:bg-secondary"
             onClick={() => openModal("register")}
           >
             Sign up with E-mail
@@ -57,7 +57,7 @@ const LandingPage = () => {
       <div className="mt-8 flex flex-row items-center gap-2">
         <p className="text-center text-gray-500 text-sm">Already have an account?</p>
         <button
-          className="p-2 rounded-full pt-1.5 pb-1.5 pl-6 pr-6 text-sm bg-blue-gray hover:bg-blue-300"
+          className="p-2 rounded-full pt-1.5 pb-1.5 pl-6 pr-6 text-sm bg-slate-600 hover:bg-primary"
           onClick={() => openModal("login")}
         >
           Sign in

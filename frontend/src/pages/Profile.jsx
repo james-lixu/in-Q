@@ -1,4 +1,3 @@
-// Profile component
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -6,7 +5,6 @@ import MainLayout from "../pages/MainLayout";
 
 const defaultIrlProfileIcon = require("../images/Default-IRL-Profile-Icon.png");
 const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
-
 
 const Profile = () => {
   const { username } = useParams();
@@ -19,7 +17,7 @@ const Profile = () => {
   const [followLoading, setFollowLoading] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); 
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -131,7 +129,7 @@ const Profile = () => {
   const handleProfileUpdate = async () => {
     const token = localStorage.getItem("token");
     const formData = new FormData();
-    formData.append("profilePicture", selectedFile); 
+    formData.append("profilePicture", selectedFile);
 
     try {
       const response = await axios.post(
@@ -172,19 +170,7 @@ const Profile = () => {
         ></div>
 
         {/* Gamer Profile */}
-        {isEditing ? (
-          <label htmlFor="fileInput" className="cursor-pointer">
-            <img
-              className="w-32 h-32 rounded-full bg-cover bg-center relative z-10 mb-4"
-              src={
-                userData.profilePicture
-                  ? `http://localhost:4000${userData.profilePicture}`
-                  : defaultProfileIcon
-              }
-              alt={`${userData.username}'s profile`}
-            />
-          </label>
-        ) : (
+        <label htmlFor="fileInput" className="cursor-pointer">
           <img
             className="w-32 h-32 rounded-full bg-cover bg-center relative z-10 mb-4"
             src={
@@ -194,17 +180,16 @@ const Profile = () => {
             }
             alt={`${userData.username}'s profile`}
           />
-        )}
+        </label>
 
-        {/* Hidden File Input */}
         <input
           id="fileInput"
           type="file"
           onChange={handleFileChange}
-          style={{ display: "none" }}
+          className="hidden"
         />
 
-        <h2 className="text-3xl font-bold text-slate-100">{userData.name}</h2>
+        <h2 className="text-3xl font-bold text-text">{userData.name}</h2>
         <p className="text-slate-400">@{userData.username}</p>
 
         {/* Edit Profile / Follow-Unfollow Button */}
@@ -213,18 +198,26 @@ const Profile = () => {
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className="mt-4 px-4 py-2 rounded-lg bg-green-500 text-white"
+                className="mt-4 px-4 py-2 rounded-lg bg-primary text-text"
               >
                 Edit Profile
               </button>
             ) : (
               <>
+              <div className="flex flex-row space-x-2">
+                <button
+                  onClick={handleProfileUpdate} 
+                  className="mt-2 px-6 py-2 rounded-lg bg-accent text-text"
+                >
+                  Save
+                </button>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="mt-2 px-4 py-2 rounded-lg bg-gray-500 text-white"
+                  className="mt-2 px-4 py-2 rounded-lg bg-secondary text-text"
                 >
                   Cancel
                 </button>
+                </div>
               </>
             )}
           </>
@@ -246,8 +239,8 @@ const Profile = () => {
 
         {/* Follower and Following Counts */}
         <div className="flex flex-row gap-8 mt-4">
-          <p className="text-slate-100">Followers: {followerCount}</p>
-          <p className="text-slate-100">Following: {followingCount}</p>
+          <p className="text-text">Followers: {followerCount}</p>
+          <p className="text-text">Following: {followingCount}</p>
         </div>
       </div>
     </MainLayout>
