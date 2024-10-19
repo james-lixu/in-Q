@@ -1,16 +1,8 @@
-import React from 'react'
-import LeftSidebar from '../components/LeftSidebar'
-import Middlebar from '../components/Middlebar'
-import RightSidebar from '../components/RightSidebar'
+import React from "react";
+import MainLayout from "../pages/MainLayout";
 
 const Search = () => {
-  return (
-    <div className="flex flex-row justify-between">
-        <LeftSidebar/>
-        <Middlebar/>
-        <RightSidebar/>
-    </div>
-  )
-}
+  return <MainLayout />;
+};
 
-export default Search
+export default Search;

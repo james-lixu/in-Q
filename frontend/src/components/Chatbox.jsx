@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 const Chatbox = ({ friend, conversationId, onClose }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const chatMessagesRef = useRef(null); 
 
   useEffect(() => {
     const fetchMessages = async () => {
-      console.log("Fetching messages for conversationId:", conversationId);
+      console.log("Fetching all messages for conversationId:", conversationId);
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:4000/api/conversations/getMessageHistory/${conversationId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:4000/api/conversations/getMessageHistory/${conversationId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         console.log("Fetched messages:", response.data);
-        setMessages(response.data);  
+        setMessages(response.data);
       } catch (err) {
         console.error("Error fetching messages:", err);
       }
@@ -22,23 +24,30 @@ const Chatbox = ({ friend, conversationId, onClose }) => {
 
     if (conversationId) {
       fetchMessages();
-    } else {
-      console.warn("conversationId is undefined or invalid:", conversationId);
     }
   }, [conversationId]);
 
+  useEffect(() => {
+    const chatBox = chatMessagesRef.current;
+    if (chatBox) {
+      chatBox.scrollTop = chatBox.scrollHeight; 
+    }
+  }, [messages]);
+
+  // Sending a new message
   const handleSendMessage = async () => {
     console.log("Sending new message:", newMessage);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://localhost:4000/api/conversations/sendMessage",
         { conversationId, message: newMessage },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log("Message sent successfully:", response.data);
-      setMessages([...messages, response.data]);  
-      setNewMessage("");  
+
+      setMessages([...messages, response.data]); 
+      setNewMessage(""); // Clear the input
     } catch (err) {
       console.error("Error sending message:", err);
     }
@@ -50,13 +59,27 @@ const Chatbox = ({ friend, conversationId, onClose }) => {
         <h3 className="font-bold">{friend.name}</h3>
         <button onClick={onClose} className="text-red-500">Close</button>
       </div>
-      <div className="chat-messages h-48 overflow-y-auto bg-gray-900 p-2 rounded">
-        {messages.map((msg, index) => (
-          <p key={index} className="text-sm">
-            <strong>{msg.sender.name}:</strong> {msg.message}
-          </p>
-        ))}
+
+      {/* Chat messages */}
+      <div
+        className="chat-messages h-48 overflow-y-auto bg-gray-900 p-2 rounded"
+        ref={chatMessagesRef}  
+      >
+        {messages.map((msg, index) => {
+          const isSender = msg.sender._id === localStorage.getItem("userId"); 
+          return (
+            <div key={index} className={`flex ${isSender ? "justify-end" : "justify-start"} mb-2`}>
+              <p
+                className={`text-sm p-2 rounded-lg ${isSender ? "bg-blue-500 text-white" : "bg-gray-600 text-white"} max-w-xs`}
+              >
+                <strong>{msg.sender.name}:</strong> {msg.message}
+              </p>
+            </div>
+          );
+        })}
       </div>
+
+      {/* Chat input section */}
       <div className="chat-input mt-2">
         <input
           type="text"
