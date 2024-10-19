@@ -1,19 +1,14 @@
+require("dotenv").config();
+
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-const CLIENT_ID = 'your_client_id';
-const CLIENT_SECRET = 'your_client_secret';
-const REDIRECT_URI = 'http://localhost:4000/auth/callback';
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
-// OAuth route
-router.get('/callback', async (req, res) => {
-  const authorizationCode = req.query.code;
-
-  if (!authorizationCode) {
-    return res.status(400).send('Authorization code not provided');
-  }
-
+// Fetch top games
+router.get('/top-games', async (req, res) => {
   try {
     const tokenResponse = await axios.post(
       'https://id.twitch.tv/oauth2/token',
@@ -22,9 +17,7 @@ router.get('/callback', async (req, res) => {
         params: {
           client_id: CLIENT_ID,
           client_secret: CLIENT_SECRET,
-          code: authorizationCode,
-          grant_type: 'authorization_code',
-          redirect_uri: REDIRECT_URI,
+          grant_type: 'client_credentials'
         },
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -32,14 +25,22 @@ router.get('/callback', async (req, res) => {
       }
     );
 
-    const { access_token } = tokenResponse.data;
+    const accessToken = tokenResponse.data.access_token;
 
-    console.log('Access Token:', access_token);
+    const topGamesResponse = await axios.get('https://api.twitch.tv/helix/games/top', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Client-ID': CLIENT_ID
+      }
+    });
 
-    res.redirect(`http://localhost:3000?token=${access_token}`);
+    const topGames = topGamesResponse.data.data;
+
+    res.json(topGames);
+
   } catch (error) {
-    console.error('Error exchanging authorization code:', error);
-    res.status(500).send('Error exchanging authorization code');
+    console.error('Error fetching top games:', error);
+    res.status(500).send('Error fetching top games');
   }
 });
 

@@ -14,6 +14,7 @@ import { UserProvider } from "./context/UserContext";
 const App = () => {
   return (
     <div className="App">
+      
       <UserProvider>
         <BrowserRouter>
           <div className="pages">

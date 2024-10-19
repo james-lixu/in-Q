@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import googleSignupButton from "../images/web_dark_rd_SU.svg";
 import RegisterModal from "../components/RegisterModal";
 import LoginModal from "../components/LoginModal";
 const inQLogo = require("../images/inQ-Logo.png");
@@ -11,55 +10,63 @@ const LandingPage = () => {
   const openModal = (type) => {
     setModalType(type);
     setShowModal(true);
-    window.history.pushState({}, '', `/${type}`);
+    window.history.pushState({}, "", `/${type}`);
   };
 
   const closeModal = () => {
     setShowModal(false);
     setModalType(null);
-    window.history.pushState({}, '', '/'); 
+    window.history.pushState({}, "", "/");
   };
 
   useEffect(() => {
     const handlePopState = () => {
-      closeModal(); 
+      closeModal();
     };
 
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, []);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-8">
-      <div className="flex items-center justify-center gap-16 p-8">
-        <div>
-          <img src={inQLogo} alt="in-Q Logo" className="w-48 h-auto" />
+      <div className="flex items-center justify-center gap-16">
+        {/* Logo*/}
+        <div className="flex flex-col items-center justify-center">
+          <img src={inQLogo} alt="in-Q Logo" className="w-96 h-auto" />
         </div>
+
+        {/* Vertical Divider */}
         <div className="w-px h-32 bg-gray-500"></div>
-        <div className="flex flex-col gap-4 items-center">
-          <img src={googleSignupButton} alt="google sign up" className="w-40" />
-          <div className="w-48 h-px bg-gray-500"></div>
+
+        {/* Sign up */}
+        <div className="flex flex-col items-center justify-center gap-4">
+          <h1 className="text-4xl font-bold">Find Your Queue.</h1>
+          <div className="w-64 h-px bg-gray-500"></div>
           <button
-            className="rounded-full p-2 text-sm bg-dark-gray hover:bg-slate-600"
-            onClick={() => openModal('register')}
+            className="rounded-full pt-2 pb-2 pl-10 pr-10 text-sm bg-dark-gray hover:bg-slate-600"
+            onClick={() => openModal("register")}
           >
             Sign up with E-mail
           </button>
         </div>
       </div>
-      <div className="mt-4 flex gap-4">
-        <p className="text-center text-gray-500 text-sm mt-2">Already have an account?</p>
-        <button 
-          className="p-2 rounded-full pt-1.5 pb-1.5 text-sm bg-blue-gray hover:bg-blue-300" 
-          onClick={() => openModal('login')}
+
+      <div className="mt-8 flex flex-row items-center gap-2">
+        <p className="text-center text-gray-500 text-sm">Already have an account?</p>
+        <button
+          className="p-2 rounded-full pt-1.5 pb-1.5 pl-6 pr-6 text-sm bg-blue-gray hover:bg-blue-300"
+          onClick={() => openModal("login")}
         >
           Sign in
         </button>
       </div>
-      <RegisterModal show={showModal && modalType === 'register'} onClose={closeModal} />
-      <LoginModal show={showModal && modalType === 'login'} onClose={closeModal} />
+
+      {/* Modals */}
+      <RegisterModal show={showModal && modalType === "register"} onClose={closeModal} />
+      <LoginModal show={showModal && modalType === "login"} onClose={closeModal} />
     </div>
   );
 };

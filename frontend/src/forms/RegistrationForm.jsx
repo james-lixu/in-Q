@@ -47,7 +47,6 @@ const FloatingLabelInput = ({ label, type, name, value, onChange, error }) => {
 const RegistrationForm = () => {
   const navigate = useNavigate();
 
-  // Update form data to include "name"
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -75,7 +74,6 @@ const RegistrationForm = () => {
 
     setErrorMessage("");
 
-    // Handle validation for the name field
     if (name === "name") {
       setFormErrors((prevState) => ({
         ...prevState,
@@ -104,7 +102,6 @@ const RegistrationForm = () => {
     }
   };
 
-  // New validation function for the name field
   const validateName = (name) => {
     return name.length >= 2;
   };
@@ -136,16 +133,21 @@ const RegistrationForm = () => {
     if (!isFormValid) {
       const messages = [];
       if (formErrors.name) messages.push("Name must be at least 2 characters.");
-      if (formErrors.username) messages.push("Username must be at least 4 characters.");
+      if (formErrors.username)
+        messages.push("Username must be at least 4 characters.");
       if (formErrors.email) messages.push("Email is not valid.");
-      if (formErrors.password) messages.push("Password must be at least 6 characters.");
+      if (formErrors.password)
+        messages.push("Password must be at least 6 characters.");
       if (formErrors.confirmPassword) messages.push("Passwords do not match.");
       setErrorMessage(messages.join(" "));
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:4000/api/users/register", formData);
+      const response = await axios.post(
+        "http://localhost:4000/api/users/register",
+        formData
+      );
       console.log(response.data.message);
       navigate("/home");
     } catch (error) {
@@ -158,16 +160,16 @@ const RegistrationForm = () => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className="flex justify-center flex-col items-center">
-          <img src={inQLogo} alt="in-Q Logo" className="w-36 mb-4" />
-          <h2 className="text-2xl mb-8">Create your account.</h2>
-
+        <div className="flex self-center flex-col items-center">
+          <img src={inQLogo} alt="in-Q Logo" className="w-24 mb-4" />
+          <div className="self-start ml-24">
+            <h2 className="text-3xl mb-8">Create your account.</h2>
+          </div>
           {/* Error message display */}
           {errorMessage && (
             <div className="text-neon-red mb-4 text-center">{errorMessage}</div>
           )}
 
-          {/* Add FloatingLabelInput for Name */}
           <FloatingLabelInput
             label="Name"
             type="text"
