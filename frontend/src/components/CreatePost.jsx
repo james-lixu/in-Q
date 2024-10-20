@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaPhotoVideo, FaVideo, FaStream, FaCalendarAlt } from "react-icons/fa";
@@ -9,17 +9,18 @@ const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
 const CreatePost = ({ onPostCreated }) => {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null); 
+  const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
   const navigate = useNavigate();
+  const textareaRef = useRef(null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file); 
-      setImagePreview(URL.createObjectURL(file)); 
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -47,14 +48,14 @@ const CreatePost = ({ onPostCreated }) => {
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
       setContent("");
-      setImage(null); 
-      setImagePreview(null); 
+      setImage(null);
+      setImagePreview(null);
       setLoading(false);
 
       if (onPostCreated) {
@@ -64,6 +65,17 @@ const CreatePost = ({ onPostCreated }) => {
       setError("Failed to create post");
       setLoading(false);
     }
+  };
+
+  const autoResizeTextarea = () => {
+    const textarea = textareaRef.current;
+    textarea.style.height = "auto"; 
+    textarea.style.height = `${textarea.scrollHeight}px`; 
+  };
+
+  const handleContentChange = (e) => {
+    setContent(e.target.value);
+    autoResizeTextarea(); 
   };
 
   return (
@@ -84,10 +96,13 @@ const CreatePost = ({ onPostCreated }) => {
             onClick={() => navigate(`/${user.username}`)}
           />
           <textarea
+            ref={textareaRef} 
             value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="flex-grow h-14 ml-4 p-2 bg-gray-800 rounded-lg text-text focus:outline-none"
+            onChange={handleContentChange}
+            className="flex-grow h-auto ml-4 p-2 bg-gray-800 rounded-lg text-text focus:outline-none"
             placeholder="Type here..."
+            rows="1" 
+            style={{ resize: "none", overflow: "hidden" }} 
           />
         </div>
 
@@ -95,42 +110,46 @@ const CreatePost = ({ onPostCreated }) => {
 
         {imagePreview && (
           <div className="mb-4 flex justify-center">
-            <img 
-              src={imagePreview} 
-              alt="Image preview" 
-              className="w-3/4 h-auto rounded-lg mx-auto" 
+            <img
+              src={imagePreview}
+              alt="Image preview"
+              className="w-3/4 h-auto rounded-lg mx-auto"
             />
           </div>
         )}
 
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between items-center mt-4">
           <div className="flex gap-4">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="flex items-center text-neon-green"
-              onClick={() => document.getElementById('fileInput').click()}
+              onClick={() => document.getElementById("fileInput").click()}
             >
-              <FaPhotoVideo className="mr-1" /> Photo
+              <FaPhotoVideo className="mr-1" />
+              <span className="hidden sm:inline">Photo</span>{" "}
             </button>
 
-            <input 
-              id="fileInput" 
-              type="file" 
-              accept="image/*" 
-              style={{ display: 'none' }} 
-              onChange={handleImageChange} 
+            <input
+              id="fileInput"
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
             />
 
             <button type="button" className="flex items-center text-primary">
-              <FaVideo className="mr-1" /> Video
+              <FaVideo className="mr-1" />
+              <span className="hidden sm:inline">Video</span>{" "}
             </button>
 
             <button type="button" className="flex items-center text-secondary">
-              <FaStream className="mr-1" /> Thread
+              <FaStream className="mr-1" />
+              <span className="hidden sm:inline">Thread</span>{" "}
             </button>
 
             <button type="button" className="flex items-center text-accent">
-              <FaCalendarAlt className="mr-1" /> Schedule
+              <FaCalendarAlt className="mr-1" />
+              <span className="hidden sm:inline">Schedule</span>{" "}
             </button>
           </div>
 

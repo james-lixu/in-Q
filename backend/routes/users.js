@@ -10,7 +10,8 @@ const {
   checkFollowing,
   checkFriendship,
   getFriendsList,
-  uploadProfilePicture
+  uploadProfilePicture,
+  updateBio
 } = require("../controllers/UserController");
 const authMiddleware = require("../middleware/authMiddleware");
 const upload = require('../middleware/fileUploadMiddleware'); 
@@ -47,6 +48,12 @@ router.get("/check-friendship/:username", authMiddleware, checkFriendship);
 router.get("/friends", authMiddleware, getFriendsList);
 
 // Profile image upload (protected route)
-router.post('/upload-profile-image', authMiddleware, upload.single('profilePicture'), uploadProfilePicture); 
+router.post('/upload-profile-image', authMiddleware, (req, res, next) => {
+  req.folder = 'uploads/profile_pictures/';  
+  next();
+}, upload.single('profilePicture'), uploadProfilePicture); 
+
+// Updating bio
+router.post("/update-bio", authMiddleware, updateBio);
 
 module.exports = router;

@@ -46,6 +46,12 @@ const UserSchema = new Schema(
       default: defaultIRLProfileIcon,
     },
 
+    bio: {
+      type: String,
+      default: "",
+      maxlength: 120,
+    },
+
     gamingPreferences: {
       status: {
         type: String,

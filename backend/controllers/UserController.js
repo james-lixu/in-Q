@@ -68,9 +68,9 @@ const userInfo = async (req, res) => {
     let user;
 
     if (username) {
-      user = await User.findOne({ username }).select('name username followers following profilePicture irlProfilePicture');
+      user = await User.findOne({ username }).select('name username followers following profilePicture irlProfilePicture bio');
     } else {
-      user = await User.findById(_id).select('name username followers following profilePicture irlProfilePicture');
+      user = await User.findById(_id).select('name username followers following profilePicture irlProfilePicture bio');
     }
 
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -83,6 +83,7 @@ const userInfo = async (req, res) => {
       username: user.username,
       profilePicture: user.profilePicture,
       irlProfilePicture: user.irlProfilePicture,
+      bio: user.bio,
       followerCount, 
       followingCount
     });
@@ -302,6 +303,25 @@ const uploadIRLProfilePicture = async (req, res) => {
   }
 };
 
+// Update bio 
+const updateBio = async (req, res) => {
+  const { bio } = req.body;
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.bio = bio;  
+    await user.save();
+
+    res.status(200).json({ message: "Bio updated successfully", bio: user.bio });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update bio" });
+  }
+};
+
 
 module.exports = {
     userRegistration,
@@ -316,4 +336,5 @@ module.exports = {
     getFriendsList,
     uploadProfilePicture,
     uploadIRLProfilePicture,
+    updateBio,
 }

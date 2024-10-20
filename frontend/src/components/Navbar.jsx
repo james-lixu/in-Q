@@ -30,7 +30,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-12 bg-gray-950 px-4 z-50 flex justify-between items-center">
+    <div className="fixed top-0 left-0 w-full h-12 bg-background px-4 z-50 flex justify-between items-center">
       {/* Logo */}
       <button onClick={() => navigate("/home")} className="ml-4">
         <img src={inQLogo} alt="in-Q Logo" className="w-10 lg:w-12" />

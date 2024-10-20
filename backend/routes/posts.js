@@ -1,5 +1,5 @@
 const express = require("express");
-const { getPost, createPost, deletePost } = require('../controllers/PostController');
+const { getPost, createPost, deletePost, getUserPosts } = require('../controllers/PostController');
 const upload = require('../middleware/fileUploadMiddleware'); 
 const authMiddleware = require('../middleware/authMiddleware')
 
@@ -16,5 +16,8 @@ router.post('/createPost', authMiddleware, (req, res, next) => {
 
 // Delete post 
 router.delete("/deletePost/:id", authMiddleware, deletePost);
+
+//Get specifific user's posts
+router.get("/getUserPosts/:username", getUserPosts);
 
 module.exports = router;

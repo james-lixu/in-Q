@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import CreatePost from "./CreatePost";
 
@@ -37,45 +38,29 @@ const PostList = () => {
     }
   };
 
-  // Infinite scroll
   useEffect(() => {
-    let debounceTimeout;
+    fetchPosts();
+  }, [page]);
 
+  useEffect(() => {
     const handleScroll = () => {
-      const windowHeight =
-        window.innerHeight + document.documentElement.scrollTop;
-      const offsetHeight = document.documentElement.offsetHeight;
-
-      if (windowHeight >= offsetHeight - 100 && hasMore && !loading) {
-        setPage((prevPage) => {
-          const nextPage = prevPage + 1;
-          fetchPosts(nextPage);
-          return nextPage;
-        });
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 100 &&
+        hasMore &&
+        !loading
+      ) {
+        setPage((prevPage) => prevPage + 1);
       }
     };
 
-    const debounceScroll = () => {
-      if (debounceTimeout) clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(handleScroll, 50);
-    };
-
-    window.addEventListener("scroll", debounceScroll);
-
-    return () => {
-      window.removeEventListener("scroll", debounceScroll);
-      clearTimeout(debounceTimeout);
-    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loading]);
 
-  // Handle new post
   const handlePostCreated = (newPost) => {
     setPosts((prevPosts) => [newPost, ...prevPosts]); // Add new post to the top of the feed
   };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   return (
     <div>
@@ -88,20 +73,34 @@ const PostList = () => {
           className="feed-item bg-black border border-slate-800 shadow-md p-4 mb-4"
         >
           <div className="flex items-center mb-2">
-            <h3 className="font-bold">{post.username}</h3>
-            <span className="text-text ml-2  text-sm">
+            <Link to={`/${post.user?.username}`} className="flex items-center">
+              {post.user?.profilePicture ? (
+                <img
+                  src={`http://localhost:4000${post.user.profilePicture}`}
+                  alt={`${post.user?.username}'s profile`}
+                  className="w-10 h-10 rounded-full mr-2"
+                />
+              ) : (
+                <img
+                  src="/defaultProfileIcon.png" 
+                  alt="Default Profile"
+                  className="w-10 h-10 rounded-full mr-2"
+                />
+              )}
+              <h3 className="font-extrabold text-white">@{post.user?.username}</h3>
+            </Link>
+            <span className="text-text ml-2 text-sm">
               {new Date(post.createdAt).toLocaleString()}
             </span>
           </div>
-          <p className="ml-4">{post.content}</p>
+          <p className="ml-4 whitespace-pre-wrap">{post.content}</p>
 
-          {/* Render image if post has one */}
           {post.image && (
             <div className="flex justify-center">
               <img
                 src={`http://localhost:4000${post.image}`}
-                alt="Post Image"
-                className="mt-4 w-full h-1/2 rounded-lg mx-auto"
+                alt="Post"
+                className="mt-4 w-[90%] h-1/2 rounded-lg mx-auto"
               />
             </div>
           )}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Chatbox from "./Chatbox";
+import { Link } from "react-router-dom";
 
 const RightSidebar = () => {
   const [friends, setFriends] = useState([]);
@@ -92,12 +93,12 @@ const RightSidebar = () => {
 
   return (
     <div className="right-sidebar w-full h-screen">
-      <h2 className="text-xl font-bold self-center mt-8">Friends</h2>
+      <h2 className="text-xl font-bold self-center mt-4 ml-2 mb-2">Friends</h2>
       <ul className="w-full">
         {friends.map((friend) => (
           <li
             key={friend._id}
-            className="inline-flex items-center justify-start space-x-3 w-full p-1 pl-4 hover:bg-gray-800 rounded-md"
+            className="inline-flex items-center justify-start space-x-3 w-full p-1 pl-4 hover:bg-darkPurple rounded-md"
             onDoubleClick={() => handleStartChat(friend)}
           >
             <div className="w-10 h-8 mt-1 rounded-full overflow-hidden">
@@ -108,14 +109,14 @@ const RightSidebar = () => {
                     : "default-profile-image.png"
                 }
                 alt={`${friend.name}'s profile`}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover select-none"
               />
             </div>
 
             <div className="flex flex-col text-left w-full">
-              <p className="font-bold select-none">{friend.name}</p>
+              <p className="font-bold select-none cursor-default">{friend.name}</p>
               <p className="text-sm text-gray-500 select-none">
-                @{friend.username}
+                <Link to={`/${friend.username}`}>@{friend.username}</Link>
               </p>
             </div>
           </li>

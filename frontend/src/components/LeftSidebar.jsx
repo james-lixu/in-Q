@@ -54,7 +54,7 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-4 p-2 gap-3 focus:font-bold ${
             isActive("/home")
-              ? "text-text font-bold underline underline-offset-8"
+              ? "text-lightPink font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/home")}
@@ -66,7 +66,7 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/search")
-              ? "text-text font-bold underline underline-offset-8"
+              ? "text-lightPink font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/search")}
@@ -82,7 +82,7 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/explore")
-              ? "text-text font-bold underline underline-offset-8"
+              ? "text-lightPink font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/explore")}
@@ -94,7 +94,7 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/messages")
-              ? "text-text font-bold underline underline-offset-8"
+              ? "text-lightPink font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/messages")}
@@ -106,7 +106,7 @@ const LeftSidebar = () => {
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold ${
             isActive("/games")
-              ? "text-text font-bold underline underline-offset-8"
+              ? "text-lightPink font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/games")}
