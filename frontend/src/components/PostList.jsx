@@ -1,26 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import CreatePost from "./CreatePost";
 
-const PostList = () => {
-  const [posts, setPosts] = useState([]);
+const PostList = ({ posts, setPosts, username }) => { // Accept username as a prop
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(null); 
+  const currentUserId = localStorage.getItem("userId");
 
   const fetchPosts = async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
     try {
-      const response = await axios.get(
-        `http://localhost:4000/api/posts/getPost?page=${page}&limit=5`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      // Check if fetching posts for a specific user or all posts
+      const url = username
+        ? `http://localhost:4000/api/posts/getUserPosts/${username}?page=${page}&limit=5`
+        : `http://localhost:4000/api/posts/getPost?page=${page}&limit=5`;
+
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
 
       const newPosts = response.data.posts || [];
 
@@ -40,7 +42,7 @@ const PostList = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [page]);
+  }, [page, username]); // Add username as a dependency
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,13 +60,40 @@ const PostList = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loading]);
 
-  const handlePostCreated = (newPost) => {
-    setPosts((prevPosts) => [newPost, ...prevPosts]); // Add new post to the top of the feed
+  const toggleDropdown = (postId) => {
+    setDropdownOpen((prevOpen) => (prevOpen === postId ? null : postId)); 
+  };
+
+  const dropdownRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleDeletePost = async (postId) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/posts/deletePost/${postId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+
+      setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+      setDropdownOpen(null);
+    } catch (error) {
+      console.error("Failed to delete post", error);
+      setError("Failed to delete post.");
+    }
   };
 
   return (
     <div>
-      <CreatePost onPostCreated={handlePostCreated} />
       {error && <p>{error}</p>}
       {posts.length === 0 && !loading && <p>No posts yet.</p>}
       {posts.map((post) => (
@@ -72,26 +101,35 @@ const PostList = () => {
           key={post._id}
           className="feed-item bg-black border border-slate-800 shadow-md p-4 mb-4"
         >
-          <div className="flex items-center mb-2">
-            <Link to={`/${post.user?.username}`} className="flex items-center">
-              {post.user?.profilePicture ? (
-                <img
-                  src={`http://localhost:4000${post.user.profilePicture}`}
-                  alt={`${post.user?.username}'s profile`}
-                  className="w-10 h-10 rounded-full mr-2"
-                />
-              ) : (
-                <img
-                  src="/defaultProfileIcon.png" 
-                  alt="Default Profile"
-                  className="w-10 h-10 rounded-full mr-2"
-                />
-              )}
-              <h3 className="font-extrabold text-white">@{post.user?.username}</h3>
-            </Link>
-            <span className="text-text ml-2 text-sm">
-              {new Date(post.createdAt).toLocaleString()}
-            </span>
+          <div className="flex items-center mb-2 justify-between relative">
+            <div className="flex items-center">
+              <Link to={`/${post.user?.username}`} className="flex items-center">
+                {post.user?.profilePicture ? (
+                  <img
+                    src={`http://localhost:4000${post.user.profilePicture}`}
+                    alt={`${post.user?.username}'s profile`}
+                    className="w-10 h-10 rounded-full mr-2"
+                  />
+                ) : (
+                  <img
+                    src="/defaultProfileIcon.png"
+                    alt="Default Profile"
+                    className="w-10 h-10 rounded-full mr-2"
+                  />
+                )}
+                <div className="flex flex-col gap-0 -mt-0.5">
+                  <h3 className="font-extrabold text-white underline underline-offset-8">
+                    {post.user.name}
+                  </h3>
+                  <h3 className="text-sm text-slate-400">
+                    @{post.user?.username}
+                  </h3>
+                </div>
+              </Link>
+              <span className="text-text ml-4 text-sm">
+                {new Date(post.createdAt).toLocaleString()}
+              </span>
+            </div>
           </div>
           <p className="ml-4 whitespace-pre-wrap">{post.content}</p>
 

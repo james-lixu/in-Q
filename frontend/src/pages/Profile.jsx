@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import MainLayout from "../pages/MainLayout";
 import PFPEdit from "../images/PFP-Edit.svg";
-import ProfileEditIcon from "../images/Profile-Edit.svg";
+import PostList from "../components/PostList"; 
 
 const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
 
@@ -11,7 +11,7 @@ const Profile = () => {
   const { username } = useParams();
   const [userData, setUserData] = useState(null);
   const [bio, setBio] = useState("");
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]); 
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -50,32 +50,34 @@ const Profile = () => {
           );
         }
 
-        setUserData(response.data);
-        setBio(response.data.bio || "");
-        setFollowerCount(response.data.followerCount);
-        setFollowingCount(response.data.followingCount);
+        const userInfo = response.data;
 
-        const currentUsername = response.data.username;
+        setUserData(userInfo);
+        setBio(userInfo.bio || "");
+        setFollowerCount(userInfo.followerCount);
+        setFollowingCount(userInfo.followingCount);
+
+        const currentUsername = userInfo.username;
         const storedUsername = localStorage.getItem("username");
         setIsOwnProfile(currentUsername === storedUsername);
 
-        // Fetch user's posts
+        // Fetch the user's posts from the backend
         const postsResponse = await axios.get(
-          `http://localhost:4000/api/posts/getUserPosts/${response.data.username}`,
+          `http://localhost:4000/api/posts/getUserPosts/${userInfo.username}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
+
+        // Set only this user's posts
         setPosts(postsResponse.data.posts);
 
         if (username) {
-          // Check if the user is following the profile user
+          // Check if the user is following this profile
           const followResponse = await axios.get(
-            `http://localhost:4000/api/users/followers/${
-              username || response.data.username
-            }`,
+            `http://localhost:4000/api/users/followers/${username}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -84,6 +86,7 @@ const Profile = () => {
           );
           setIsFollowing(followResponse.data.isFollowing);
         }
+
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch user data");
@@ -241,7 +244,7 @@ const Profile = () => {
           {/* Edit Icon */}
           {isOwnProfile && !isEditing && (
             <svg 
-            className="absolute top-0 right-0 w-7 h-7 cursor-pointer mr-4 transition-all hover:stroke-white stroke-[#6b7280]" 
+            className="absolute top-0 right-0 w-7 h-7 cursor-pointer mr-4 transition-all hover:stroke-slate-300 stroke-[#6b7280]" 
             aria-hidden="true" 
             onClick={() => setIsEditing(true)}
             xmlns="http://www.w3.org/2000/svg" 
@@ -272,7 +275,9 @@ const Profile = () => {
 
         {/* Profile Name */}
         <div className="relative flex justify-center items-center mt-2 w-full">
-          <h2 className="text-3xl font-bold text-text">{userData.name}</h2>
+          <h2 className="text-3xl font-bold text-text">
+            {userData.name || "No Name"} {/* Display user name */}
+          </h2>
         </div>
 
         <p className="text-slate-400">@{userData.username}</p>
@@ -301,7 +306,7 @@ const Profile = () => {
         {isOwnProfile ? (
           <>
             {!isEditing ? (
-              <h1></h1>
+              <p></p>
             ) : (
               <div className="flex flex-row space-x-2">
                 <button
@@ -323,7 +328,7 @@ const Profile = () => {
           <button
             onClick={handleFollow}
             className={`mt-4 px-4 py-2 rounded-lg ${
-              isFollowing ? "bg-red-500" : "bg-blue-500"
+              isFollowing ? "bg-red-500" : "bg-regBlue"
             } text-white`}
             disabled={followLoading}
           >
@@ -340,44 +345,7 @@ const Profile = () => {
           <h3 className="flex text-xl font-bold text-text mb-4 self-center">
             Posts
           </h3>
-          {posts.length > 0 ? (
-            posts.map((post) => (
-              <div
-                key={post._id}
-                className="feed-item bg-black border border-slate-800 shadow-md p-4 mb-4"
-              >
-                <div className="flex items-center mb-2">
-                  {/* Display username and profile picture */}
-                  <img
-                    src={`http://localhost:4000${
-                      post.user?.profilePicture || defaultProfileIcon
-                    }`}
-                    alt={`${post.user?.username}'s profile`}
-                    className="w-10 h-10 rounded-full mr-2"
-                  />
-                  <h3 className="font-bold text-text">
-                    @{post.user?.username}
-                  </h3>
-                  <span className="text-text ml-2 text-sm">
-                    {new Date(post.createdAt).toLocaleString()}
-                  </span>
-                </div>
-                <p className="ml-4 whitespace-pre-wrap">{post.content}</p>
-
-                {post.image && (
-                  <div className="flex justify-center">
-                    <img
-                      src={`http://localhost:4000${post.image}`}
-                      alt="Post"
-                      className="mt-4 w-[90%] h-1/2 rounded-lg mx-auto"
-                    />
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="text-slate-400 mt-2">No posts yet.</p>
-          )}
+          <PostList posts={posts} setPosts={setPosts} username={userData.username} />
         </div>
       </div>
     </MainLayout>

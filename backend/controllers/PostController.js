@@ -9,6 +9,10 @@ const getUserPosts = async (req, res) => {
   try {
     console.log(`Fetching posts for username: ${username}`);
 
+    if (!username) {
+      return res.status(400).json({ error: "Username is required" });
+    }
+
     // Find the user by username
     const user = await User.findOne({ username });
     if (!user) {
@@ -19,7 +23,7 @@ const getUserPosts = async (req, res) => {
     console.log("Found user:", user);
 
     const posts = await Post.find({ user: user._id })
-      .populate("user", "username profilePicture")
+      .populate("user", "username name profilePicture")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
@@ -34,15 +38,13 @@ const getUserPosts = async (req, res) => {
   }
 };
 
-
-
 // Get post
 const getPost = async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
 
   try {
     const posts = await Post.find()
-      .populate("user", "username profilePicture")
+      .populate("user", "username name profilePicture ")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
@@ -55,7 +57,6 @@ const getPost = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch posts" });
   }
 };
-
 
 // Create a post
 const createPost = async (req, res) => {
@@ -74,7 +75,7 @@ const createPost = async (req, res) => {
 
     newPost = await newPost.save();
 
-    newPost = await newPost.populate("user", "username profilePicture");
+    newPost = await newPost.populate("user", "username name profilePicture");
 
     res.status(201).json(newPost);
   } catch (err) {
@@ -94,11 +95,12 @@ const deletePost = async (req, res) => {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    if (post.username !== req.user.username) {
+    if (post.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
     await Post.findByIdAndDelete(id);
+    
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (err) {
     console.error("Error deleting post:", err);

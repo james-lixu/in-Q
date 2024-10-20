@@ -22,18 +22,20 @@ const LeftSidebar = () => {
         <div className="flex flex-col mb-4 items-center">
           <div className="flex flex-col items-center">
             <img
-              src={user && user.profilePicture ? `http://localhost:4000${user.profilePicture}` : defaultProfileIcon} 
+              src={
+                user && user.profilePicture
+                  ? `http://localhost:4000${user.profilePicture}`
+                  : defaultProfileIcon
+              }
               alt="Profile icon"
               className="w-20 h-20 lg:w-28 lg:h-28 rounded-full cursor-pointer"
               onClick={() => navigate(`/${user.username}`)}
             />
             {user ? (
               <>
-                <h2 className="text-text text-xl font-bold">
-                  {user.name}
-                </h2>
+                <h2 className="text-text text-xl font-bold">{user.name}</h2>
                 <span
-                  className="text-text hover:cursor-pointer"
+                  className="text-slate-400 hover:cursor-pointer"
                   onClick={() => navigate(`/${user.username}`)}
                 >
                   @{user.username}
@@ -42,9 +44,7 @@ const LeftSidebar = () => {
             ) : (
               <>
                 <h2 className="text-text text-xl font-bold">Guest</h2>
-                <span className="text-text hover:cursor-pointer">
-                  @guest
-                </span>
+                <span className="text-slate-400 hover:cursor-pointer">@guest</span>
               </>
             )}
           </div>
@@ -52,9 +52,9 @@ const LeftSidebar = () => {
 
         {/* Navigation Buttons */}
         <button
-          className={`flex mt-4 p-2 gap-3 focus:font-bold ${
+          className={`flex mt-4 p-2 gap-3 focus:font-bold transition-all duration-200 transform hover:text-text hover:scale-105 hover:bg-slate-800 rounded-lg ${
             isActive("/home")
-              ? "text-lightPink font-bold underline underline-offset-8"
+              ? "text-text font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/home")}
@@ -64,9 +64,9 @@ const LeftSidebar = () => {
         </button>
 
         <button
-          className={`flex mt-6 p-2 gap-3 focus:font-bold ${
+          className={`flex mt-6 p-2 gap-3 focus:font-bold transition-all duration-200 transform hover:text-text hover:scale-105 hover:bg-slate-800 rounded-lg ${
             isActive("/search")
-              ? "text-lightPink font-bold underline underline-offset-8"
+              ? "text-text font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/search")}
@@ -80,9 +80,9 @@ const LeftSidebar = () => {
         </button>
 
         <button
-          className={`flex mt-6 p-2 gap-3 focus:font-bold ${
+          className={`flex mt-6 p-2 gap-3 focus:font-bold transition-all duration-200 transform hover:text-text hover:scale-105 hover:bg-slate-800 rounded-lg ${
             isActive("/explore")
-              ? "text-lightPink font-bold underline underline-offset-8"
+              ? "text-text font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/explore")}
@@ -92,9 +92,9 @@ const LeftSidebar = () => {
         </button>
 
         <button
-          className={`flex mt-6 p-2 gap-3 focus:font-bold ${
+          className={`flex mt-6 p-2 gap-3 focus:font-bold transition-all duration-200 transform hover:text-text hover:scale-105 hover:bg-slate-800 rounded-lg ${
             isActive("/messages")
-              ? "text-lightPink font-bold underline underline-offset-8"
+              ? "text-text font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/messages")}
@@ -104,9 +104,9 @@ const LeftSidebar = () => {
         </button>
 
         <button
-          className={`flex mt-6 p-2 gap-3 focus:font-bold ${
+          className={`flex mt-6 p-2 gap-3 focus:font-bold transition-all duration-200 transform hover:text-text hover:scale-105 hover:bg-slate-800 rounded-lg ${
             isActive("/games")
-              ? "text-lightPink font-bold underline underline-offset-8"
+              ? "text-text font-bold underline underline-offset-8"
               : "text-text"
           }`}
           onClick={() => navigate("/games")}

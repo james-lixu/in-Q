@@ -112,7 +112,7 @@ const CreatePost = ({ onPostCreated }) => {
           <div className="mb-4 flex justify-center">
             <img
               src={imagePreview}
-              alt="Image preview"
+              alt="Preview"
               className="w-3/4 h-auto rounded-lg mx-auto"
             />
           </div>
