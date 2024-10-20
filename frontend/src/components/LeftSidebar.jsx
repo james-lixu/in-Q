@@ -6,11 +6,12 @@ import SearchIcon from "../images/Search-Icon.svg";
 import ExploreIcon from "../images/Explore-Icon.svg";
 import MessagesIcon from "../images/Messages-Icon.svg";
 import GamesIcon from "../images/Games-Icon.svg";
+import Spinner from "./Spinner"; 
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useUser();
+  const { user, loading } = useUser(); 
   const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
 
   const isActive = (path) => location.pathname === path;
@@ -21,16 +22,23 @@ const LeftSidebar = () => {
         {/* Display Name, Username, and Profile Picture */}
         <div className="flex flex-col mb-4 items-center">
           <div className="flex flex-col items-center">
-            <img
-              src={
-                user && user.profilePicture
-                  ? `http://localhost:4000${user.profilePicture}`
-                  : defaultProfileIcon
-              }
-              alt="Profile icon"
-              className="w-20 h-20 lg:w-28 lg:h-28 rounded-full cursor-pointer"
-              onClick={() => navigate(`/${user.username}`)}
-            />
+            {loading ? (
+              <div className="w-20 h-20 lg:w-28 lg:h-28 flex justify-center items-center">
+                <Spinner /> 
+              </div>
+            ) : (
+              <img
+                src={
+                  user && user.profilePicture
+                    ? `http://localhost:4000${user.profilePicture}`
+                    : defaultProfileIcon
+                }
+                alt="Profile icon"
+                className="w-20 h-20 lg:w-28 lg:h-28 rounded-full cursor-pointer"
+                onClick={() => navigate(`/${user.username}`)}
+              />
+            )}
+            
             {user ? (
               <>
                 <h2 className="text-text text-xl font-bold">{user.name}</h2>
@@ -43,8 +51,6 @@ const LeftSidebar = () => {
               </>
             ) : (
               <>
-                <h2 className="text-text text-xl font-bold">Guest</h2>
-                <span className="text-slate-400 hover:cursor-pointer">@guest</span>
               </>
             )}
           </div>

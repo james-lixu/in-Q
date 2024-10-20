@@ -4,6 +4,7 @@ import axios from "axios";
 import MainLayout from "../pages/MainLayout";
 import PFPEdit from "../images/PFP-Edit.svg";
 import PostList from "../components/PostList"; 
+import Spinner from "../components/Spinner";
 
 const defaultProfileIcon = require("../images/Default-Profile-Icon.png");
 
@@ -205,7 +206,7 @@ const Profile = () => {
     setIsEditing(false);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <div className="flex w-full h-screen justify-center items-center"><Spinner/></div>;
   if (error) return <p>{error}</p>;
 
   return (

@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Spinner from "./Spinner";
 
-const PostList = ({ posts, setPosts, username }) => { // Accept username as a prop
+const PostList = ({ posts, setPosts, username }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [dropdownOpen, setDropdownOpen] = useState(null); 
-  const currentUserId = localStorage.getItem("userId");
+  const [dropdownOpen, setDropdownOpen] = useState(null);
 
   const fetchPosts = async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
     try {
-      // Check if fetching posts for a specific user or all posts
       const url = username
         ? `http://localhost:4000/api/posts/getUserPosts/${username}?page=${page}&limit=5`
         : `http://localhost:4000/api/posts/getPost?page=${page}&limit=5`;
@@ -28,7 +27,7 @@ const PostList = ({ posts, setPosts, username }) => { // Accept username as a pr
 
       setPosts((prevPosts) => {
         const postIds = new Set(prevPosts.map((post) => post._id));
-        const uniquePosts = newPosts.filter((post) => !postIds.has(post._id)); // Avoid duplicates
+        const uniquePosts = newPosts.filter((post) => !postIds.has(post._id));
         return [...prevPosts, ...uniquePosts];
       });
 
@@ -42,7 +41,7 @@ const PostList = ({ posts, setPosts, username }) => { // Accept username as a pr
 
   useEffect(() => {
     fetchPosts();
-  }, [page, username]); // Add username as a dependency
+  }, [page, username]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,7 +60,7 @@ const PostList = ({ posts, setPosts, username }) => { // Accept username as a pr
   }, [hasMore, loading]);
 
   const toggleDropdown = (postId) => {
-    setDropdownOpen((prevOpen) => (prevOpen === postId ? null : postId)); 
+    setDropdownOpen((prevOpen) => (prevOpen === postId ? null : postId));
   };
 
   const dropdownRef = useRef(null);
@@ -80,9 +79,12 @@ const PostList = ({ posts, setPosts, username }) => { // Accept username as a pr
 
   const handleDeletePost = async (postId) => {
     try {
-      await axios.delete(`http://localhost:4000/api/posts/deletePost/${postId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      await axios.delete(
+        `http://localhost:4000/api/posts/deletePost/${postId}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
 
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
       setDropdownOpen(null);
@@ -95,7 +97,8 @@ const PostList = ({ posts, setPosts, username }) => { // Accept username as a pr
   return (
     <div>
       {error && <p>{error}</p>}
-      {posts.length === 0 && !loading && <p>No posts yet.</p>}
+      {!loading && posts.length === 0 && <p>No posts yet.</p>}
+
       {posts.map((post) => (
         <div
           key={post._id}
@@ -103,7 +106,10 @@ const PostList = ({ posts, setPosts, username }) => { // Accept username as a pr
         >
           <div className="flex items-center mb-2 justify-between relative">
             <div className="flex items-center">
-              <Link to={`/${post.user?.username}`} className="flex items-center">
+              <Link
+                to={`/${post.user?.username}`}
+                className="flex items-center"
+              >
                 {post.user?.profilePicture ? (
                   <img
                     src={`http://localhost:4000${post.user.profilePicture}`}
@@ -130,7 +136,47 @@ const PostList = ({ posts, setPosts, username }) => { // Accept username as a pr
                 {new Date(post.createdAt).toLocaleString()}
               </span>
             </div>
+
+            {/* Dropdown Menu */}
+            <div className="relative">
+              <svg
+                className="w-6 h-6 text-gray-800 dark:text-white cursor-pointer"
+                onClick={() => toggleDropdown(post._id)}
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeWidth="1"
+                  d="M6 12h.01m6 0h.01m5.99 0h.01"
+                />
+              </svg>
+              {dropdownOpen === post._id && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute right-0 mt-2 w-48 bg-background border border-gray-300 rounded shadow-lg"
+                >
+                  <ul className="py-1">
+                    <li className="px-4 py-2 hover:bg-slate-700 cursor-pointer">
+                      Edit Post
+                    </li>
+                    <li
+                      className="px-4 py-2 hover:bg-slate-700 cursor-pointer"
+                      onClick={() => handleDeletePost(post._id)}
+                    >
+                      Delete Post
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
+
           <p className="ml-4 whitespace-pre-wrap">{post.content}</p>
 
           {post.image && (
@@ -144,7 +190,12 @@ const PostList = ({ posts, setPosts, username }) => { // Accept username as a pr
           )}
         </div>
       ))}
-      {loading && <p>Loading more posts...</p>}
+
+      {loading && (
+        <div className="flex justify-center items-center my-4">
+          <Spinner />
+        </div>
+      )}
     </div>
   );
 };

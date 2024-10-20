@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Chatbox from "./Chatbox";
 import { Link } from "react-router-dom";
+import Spinner from "./Spinner";
 
 const RightSidebar = () => {
   const [friends, setFriends] = useState([]);
@@ -88,8 +89,21 @@ const RightSidebar = () => {
     setOpenChats(openChats.filter((chat) => chat.friend._id !== friendId));
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) {
+    return (
+    <div className="right-sidebar w-full h-screen flex flex-col justify-center items-center ">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="right-sidebar w-full h-screen flex justify-center items-center">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="right-sidebar w-full h-screen">
@@ -114,7 +128,9 @@ const RightSidebar = () => {
             </div>
 
             <div className="flex flex-col text-left w-full">
-              <p className="font-bold select-none cursor-default">{friend.name}</p>
+              <p className="font-bold select-none cursor-default">
+                {friend.name}
+              </p>
               <p className="text-sm text-gray-500 select-none">
                 <Link to={`/${friend.username}`}>@{friend.username}</Link>
               </p>
