@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../context/UserContext';
+import Spinner from "../components/Spinner";
 
 const inQLogo = require("../images/inQ-Logo.png");
 
@@ -166,7 +167,7 @@ const LoginForm = () => {
             className="w-1/4 bg-blue-gray text-white py-2 rounded transform transition-transform duration-300 hover:scale-105 hover:shadow-lg active:animate-bounce hover:bg-blue-300"
             disabled={loading} 
           >
-            {loading ? '...' : 'Sign in'}
+            {loading ? <Spinner/> : 'Sign in'}
           </button>
         </div>
       </form>

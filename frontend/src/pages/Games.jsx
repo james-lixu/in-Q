@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import MainLayout from "../pages/MainLayout";
+import Spinner from "../components/Spinner";
 
 const Games = () => {
   const [games, setGames] = useState([]);
@@ -26,7 +27,7 @@ const Games = () => {
   if (loading) {
     return (
       <MainLayout>
-        <div>Loading...</div>
+        <div className="flex w-full h-screen justify-center items-center"><Spinner/></div>
       </MainLayout>
     );
   }
@@ -35,7 +36,7 @@ const Games = () => {
     <MainLayout>
       <div className="px-6 py-4">
         <h1 className="text-2xl font-bold mb-4">Games</h1>
-        <div className="game-list grid grid-cols-3 md:grid-cols-5 gap-6">
+        <div className="game-list grid grid-cols-3 md:grid-cols-4 gap-6">
           {games.map((game) => (
             <div key={game.id} className="game-item rounded-lg">
               <h2 className="text-md font-semibold mb-2 whitespace-nowrap truncate">{game.name}</h2>
