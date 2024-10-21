@@ -34,16 +34,16 @@ const LeftSidebar = () => {
                     : defaultProfileIcon
                 }
                 alt="Profile icon"
-                className="w-20 h-20 lg:w-28 lg:h-28 rounded-full cursor-pointer"
+                className="w-12 h-12 lg:w-28 lg:h-28 rounded-full cursor-pointer"
                 onClick={() => navigate(`/${user.username}`)}
               />
             )}
             
             {user ? (
               <>
-                <h2 className="text-text text-xl font-bold">{user.name}</h2>
+                <h2 className="text-text text-md lg:text-xl font-bold">{user.name}</h2>
                 <span
-                  className="text-slate-400 hover:cursor-pointer"
+                  className="text-slate-400 text-sm lg:text-md hover:cursor-pointer"
                   onClick={() => navigate(`/${user.username}`)}
                 >
                   @{user.username}
@@ -69,7 +69,19 @@ const LeftSidebar = () => {
           <span className="hidden lg:block">Home</span>
         </button>
 
-        <button
+                  <button
+          className={`flex mt-6 p-2 gap-3 focus:font-bold transition-all duration-200 transform hover:text-text hover:scale-105 hover:bg-slate-800 rounded-lg ${
+            isActive("/games")
+              ? "text-text font-bold underline underline-offset-8"
+              : "text-text"
+          }`}
+          onClick={() => navigate("/games")}
+        >
+          <img src={GamesIcon} alt="Games icon" className="w-7" />
+          <span className="hidden lg:block">Games</span>
+        </button>
+
+        {/* <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold transition-all duration-200 transform hover:text-text hover:scale-105 hover:bg-slate-800 rounded-lg ${
             isActive("/search")
               ? "text-text font-bold underline underline-offset-8"
@@ -83,7 +95,7 @@ const LeftSidebar = () => {
             className="w-7 h-3/4 fill-white"
           />
           <span className="hidden lg:block">Search</span>
-        </button>
+        </button> */}
 
         <button
           className={`flex mt-6 p-2 gap-3 focus:font-bold transition-all duration-200 transform hover:text-text hover:scale-105 hover:bg-slate-800 rounded-lg ${
@@ -107,18 +119,6 @@ const LeftSidebar = () => {
         >
           <img src={MessagesIcon} alt="Messages icon" className="w-7" />
           <span className="hidden lg:block">Messages</span>
-        </button>
-
-        <button
-          className={`flex mt-6 p-2 gap-3 focus:font-bold transition-all duration-200 transform hover:text-text hover:scale-105 hover:bg-slate-800 rounded-lg ${
-            isActive("/games")
-              ? "text-text font-bold underline underline-offset-8"
-              : "text-text"
-          }`}
-          onClick={() => navigate("/games")}
-        >
-          <img src={GamesIcon} alt="Games icon" className="w-7" />
-          <span className="hidden lg:block">Games</span>
         </button>
       </div>
     </div>

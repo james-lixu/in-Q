@@ -27,6 +27,11 @@ app.use((req, res, next) => {
 //File upload
 app.use('/uploads', express.static('uploads'));   
 
+// Handle GET requests to the root URL
+app.get('/', (req, res) => {
+  res.send('Welcome to in-Q!'); 
+});
+
 //Routes
 app.use("/api/users", userRoutes);
 app.use('/api/posts', postRoutes);

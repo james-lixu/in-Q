@@ -11,7 +11,8 @@ const {
   checkFriendship,
   getFriendsList,
   uploadProfilePicture,
-  updateBio
+  updateBio,
+  searchUser
 } = require("../controllers/UserController");
 const authMiddleware = require("../middleware/authMiddleware");
 const upload = require('../middleware/fileUploadMiddleware'); 
@@ -55,5 +56,8 @@ router.post('/upload-profile-image', authMiddleware, (req, res, next) => {
 
 // Updating bio
 router.post("/update-bio", authMiddleware, updateBio);
+
+// Search query for users
+router.get("/search", authMiddleware, searchUser);
 
 module.exports = router;

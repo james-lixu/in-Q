@@ -112,7 +112,7 @@ const RightSidebar = () => {
         {friends.map((friend) => (
           <li
             key={friend._id}
-            className="inline-flex items-center justify-start space-x-3 w-full p-1 pl-4 hover:bg-darkPurple rounded-md"
+            className="inline-flex items-center justify-start space-x-3 w-full p-1 pl-4 hover:bg-gray-800 rounded-md"
             onDoubleClick={() => handleStartChat(friend)}
           >
             <div className="w-10 h-8 mt-1 rounded-full overflow-hidden">

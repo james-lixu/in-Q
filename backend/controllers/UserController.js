@@ -214,7 +214,6 @@ const checkFriendship = async (req, res) => {
 const getFriendsList = async (req, res) => {
   const { _id } = req.user;
   try {
-    console.log(`Fetching friends list for user ID: ${_id}`); 
 
     const user = await User.findById(_id).populate({
       path: 'following',
@@ -230,8 +229,6 @@ const getFriendsList = async (req, res) => {
       console.log('User not found');
       return res.status(404).json({ error: 'User not found' });
     }
-
-    console.log('Following users:', user.following);
 
     const friends = user.following.filter(friend => {
       return friend.followers.some(follower => follower._id.equals(_id));
@@ -322,6 +319,27 @@ const updateBio = async (req, res) => {
   }
 };
 
+// Search for user
+const searchUser = async (req, res) => {
+  const query = req.query.q;
+  if (!query) {
+    return res.status(400).json({ message: "No search query provided" });
+  }
+
+  try {
+    const users = await User.find({
+      $or: [
+        { username: { $regex: query, $options: "i" } },
+        { name: { $regex: query, $options: "i" } },
+      ],
+    }).select("username name profilePicture");
+
+    res.status(200).json(users);
+
+  } catch (error) {
+    res.status(500).json({ message: "Error searching users", error });
+  }
+};
 
 module.exports = {
     userRegistration,
@@ -337,4 +355,5 @@ module.exports = {
     uploadProfilePicture,
     uploadIRLProfilePicture,
     updateBio,
+    searchUser
 }
