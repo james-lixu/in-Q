@@ -108,9 +108,122 @@ const deletePost = async (req, res) => {
   }
 };
 
+// Like a post
+const likePost = async (req, res) => {
+  const { id } = req.params; 
+  const userId = req.user._id; 
+
+  try {
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    if (!post.likes.includes(userId)) {
+      post.likes.push(userId);
+      await post.save();
+      return res.status(200).json({ message: "Post liked", post });
+    } else {
+      return res.status(400).json({ error: "Post already liked" });
+    }
+  } catch (err) {
+    console.error("Error liking post:", err);
+    res.status(500).json({ error: "Failed to like post" });
+  }
+};
+
+// Unlike a post
+const unlikePost = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    if (post.likes.includes(userId)) {
+      post.likes = post.likes.filter((like) => like.toString() !== userId.toString());
+      await post.save();
+      return res.status(200).json({ message: "Post unliked", post });
+    } else {
+      return res.status(400).json({ error: "Post not liked" });
+    }
+  } catch (err) {
+    console.error("Error unliking post:", err);
+    res.status(500).json({ error: "Failed to unlike post" });
+  }
+};
+
+// Add a comment
+const addComment = async (req, res) => {
+  const { id } = req.params; 
+  const { content } = req.body;
+  const userId = req.user._id;
+
+  try {
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const newComment = {
+      user: userId,
+      content,
+    };
+
+    post.comments.push(newComment);
+    await post.save();
+
+    res.status(201).json({ message: "Comment added", post });
+  } catch (err) {
+    console.error("Error adding comment:", err);
+    res.status(500).json({ error: "Failed to add comment" });
+  }
+};
+
+// Delete a comment
+const deleteComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const comment = post.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    if (comment.user.toString() !== userId.toString()) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    comment.remove();
+    await post.save();
+
+    res.status(200).json({ message: "Comment deleted", post });
+  } catch (err) {
+    console.error("Error deleting comment:", err);
+    res.status(500).json({ error: "Failed to delete comment" });
+  }
+};
+
 module.exports = {
   getPost,
   getUserPosts,  
   createPost,
   deletePost,
+  likePost,
+  unlikePost,
+  addComment,
+  deleteComment,
 };

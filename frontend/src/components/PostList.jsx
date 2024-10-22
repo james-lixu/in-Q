@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Spinner from "./Spinner";
+import LikeIcon from "../images/Like-Icon.svg";
+import LikedIcon from "../images/Liked-Icon.svg";
+import CommentIcon from "../images/Comment-Icon.svg";
+import ReportIcon from "../images/Flag-Icon.svg";
 
 const PostList = ({ posts, setPosts, username }) => {
   const [loading, setLoading] = useState(false);
@@ -123,11 +127,11 @@ const PostList = ({ posts, setPosts, username }) => {
                     className="w-10 h-10 rounded-full mr-2"
                   />
                 )}
-                <div className="flex flex-col gap-0 -mt-0.5">
-                  <h3 className="font-extrabold text-white underline underline-offset-8">
+                <div className="flex flex-col gap-0 -mt-0.5 ">
+                  <h3 className="font-extrabold text-white underline underline-offset-8 transition-opacity duration-300 hover:opacity-85">
                     {post.user.name}
                   </h3>
-                  <h3 className="text-sm text-slate-400">
+                  <h3 className="text-sm text-slate-400 hover:text-blue-500">
                     @{post.user?.username}
                   </h3>
                 </div>
@@ -188,6 +192,15 @@ const PostList = ({ posts, setPosts, username }) => {
               />
             </div>
           )}
+          <div className="post-interaction flex justify-between mt-6">
+            <div className="like-comment flex flex-row gap-6 ml-6 pb-1">
+<svg class="w-6 h-6 text-gray-800 dark:text-white hover:shadow-[0_0_15px_rgba(255,0,0,0.7)] transition-shadow duration-300 hover:stroke-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+</svg>
+              <img src={CommentIcon} alt="Comment icon" className="w-7 h-7"></img>
+            </div>
+            <img src={ReportIcon} alt="Report icon" className="w-7 h-7"></img>
+          </div>
         </div>
       ))}
 
