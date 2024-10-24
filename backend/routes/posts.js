@@ -18,18 +18,18 @@ router.post('/createPost', authMiddleware, (req, res, next) => {
 router.delete("/deletePost/:id", authMiddleware, deletePost);
 
 //Get specifific user's posts
-router.get("/getUserPosts/:username", getUserPosts);
+router.get("/getUserPosts/:username", authMiddleware, getUserPosts);
 
 // Like a post
-router.put("/like/:id", likePost);
+router.put("/likePost/:id", authMiddleware, likePost);
 
 // Unlike a post
-router.put("/unlike/:id", unlikePost);
+router.put("/unlikePost/:id",authMiddleware, unlikePost);
 
 // Add a comment to a post
-router.post("/comment/:id", addComment);
+router.post("/comment/:id", authMiddleware, addComment);
 
 // Delete a comment
-router.delete("/comment/:postId/:commentId", deleteComment);
+router.delete("/comment/:postId/:commentId", authMiddleware, deleteComment);
 
 module.exports = router;
