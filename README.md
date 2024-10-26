@@ -12,6 +12,7 @@ inQ is a social media platform tailored for gamers to connect, share experiences
 
 ## Features to be added
 - Pages for the games list to allow for sharing content for that specific game
+- Mobile view
 - Gaming preferences (available, unavailable, looking to play, etc.)
 - Video uploads
 
