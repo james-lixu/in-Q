@@ -36,10 +36,8 @@ inQ is a social media platform tailored for gamers to connect, share experiences
      cd frontend
      npm start
 
-#### Usage
+### Usage
 
 Once both servers are running, open http://localhost:3000 in your browser to view the app.
-
-Folder Structure
-  backend/ - Contains server code (Node.js, Express)
-  frontend/ - Contains client code (React)
+  - backend/ - Contains server code (Node.js, Express)
+  - frontend/ - Contains client code (React)
