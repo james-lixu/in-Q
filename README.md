@@ -1,4 +1,4 @@
-# inQ - Social Media for Gamers
+# in-Q - Social Media for Gamers
 
 inQ is a social media platform tailored for gamers to connect, share experiences, and see who's online to play. With features like status updates, friend/follower lists, and game preferences, inQ makes it easy for gamers to find friends to play with.
 
@@ -9,6 +9,11 @@ inQ is a social media platform tailored for gamers to connect, share experiences
 - Integrated chatbox for live conversations
 - Easy search to find gaming friends
 - Display of top games using the Twitch API (no login required)
+
+## Features to be added
+- Pages for the games list to allow for sharing content for that specific game
+- Gaming preferences (available, unavailable, looking to play, etc.)
+- Video uploads
 
 ## Getting Started
 
@@ -36,7 +41,7 @@ inQ is a social media platform tailored for gamers to connect, share experiences
      cd frontend
      npm start
 
-### Usage
+## Usage
 
 Once both servers are running, open http://localhost:3000 in your browser to view the app.
   - backend/ - Contains server code (Node.js, Express)
