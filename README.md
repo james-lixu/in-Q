@@ -19,7 +19,7 @@ inQ is a social media platform tailored for gamers to connect, share experiences
 
 1. Clone this repository:
      ```bash
-     git clone https://github.com/james-lixu/in-Q.git](https://github.com/james-lixu/in-Q.git
+     git clone https://github.com/james-lixu/in-Q.git
      cd in-Q
 2. Install dependencies for both frontend and backend
      ```bash
