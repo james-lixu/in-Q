@@ -109,11 +109,6 @@ const PostList = ({ posts, setPosts, username }) => {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
   
-      // Log to debug
-      console.log("isLiked: ", isLiked);
-      console.log("Post likes before update:", post.likes);
-  
-      // Update the post in the local state immediately
       setPosts((prevPosts) =>
         prevPosts.map((p) =>
           p._id === post._id
@@ -121,7 +116,7 @@ const PostList = ({ posts, setPosts, username }) => {
                 ...p,
                 likes: isLiked
                   ? p.likes.filter((userId) => userId !== user._id)
-                  : [...p.likes, user._id], // Add or remove user ID from likes array
+                  : [...p.likes, user._id], 
                 likedByCurrentUser: !isLiked, // Toggle like state
               }
             : p
